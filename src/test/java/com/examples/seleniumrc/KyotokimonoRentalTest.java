@@ -304,11 +304,16 @@ public class KyotokimonoRentalTest {
 				DE = findXpath(DateString);
 
 				DateText = DE.getText();
-				DE.click();
+			
 				if (assertDate() || ("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
-					return true;
+					DE.click();
+					if (assertDate())
+						continue;
+					else {
+						return true;
+					}
 				}
 
 			}
