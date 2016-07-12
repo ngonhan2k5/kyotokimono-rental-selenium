@@ -14,7 +14,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import com.examples.seleniumrc.util.PropertyReader;
 
 
-public class checkFeeOnHoliday {
+public class HolidayFee {
 
 	WebDriver driver;
 	int num_person;

@@ -17,7 +17,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import com.examples.seleniumrc.util.PropertyReader;
 import com.thoughtworks.selenium.webdriven.commands.GetAttribute;
 
-public class eventplanbooking {
+public class BookingEventPlan {
 
 	WebDriver driver;
 	int num_person;
