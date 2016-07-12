@@ -69,10 +69,10 @@ public class YukataReantalTest {
 
 		num_person = 2;
 
-		name_shop = "kyoto";
+		//name_shop = "kyoto";
 		// name_shop = "gionshijo";
 		// name_shop = "osaka";
-		// name_shop = "tokyo";
+		 name_shop = "tokyo";
 
 		// name_shop = "kamakura";
 		// name_shop = "kinkakuji";
@@ -89,7 +89,7 @@ public class YukataReantalTest {
 
 		// get price of dress because price dress of all person is same
 		price_dress = Integer
-				.parseInt(get_Attribute_Element(".//*[@id='plans_12_persons_0']/div/div[3]/p/span", "data-value"));
+				.parseInt(get_Attribute_Element(".//*[@id='person_amount']", "data-value"));
 		price_dress_web = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / num_person;
 
 		// click place and date
@@ -254,13 +254,16 @@ public class YukataReantalTest {
 						+ "]/div/div";
 
 				DE = findXpath(DateString);
-
 				DateText = DE.getText();
-				DE.click();
-				if (assertDate() || ("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
+				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
-					return true;
+					DE.click();
+					if (assertDate())
+						continue;
+					else {
+						return true;
+					}
 				}
 
 			}

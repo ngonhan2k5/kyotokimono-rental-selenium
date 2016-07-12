@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +19,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.examples.seleniumrc.util.PropertyReader;
-import com.thoughtworks.selenium.webdriven.commands.GetAttribute;
 
 import org.openqa.selenium.JavascriptExecutor;
 
@@ -67,8 +64,8 @@ public class KyotokimonoRentalTest {
 
 		num_person = 2;
 
-		name_shop = "kyoto";
-		// name_shop = "gionshijo";
+		//name_shop = "kyoto";
+		 name_shop = "gionshijo";
 		// name_shop = "osaka";
 		// name_shop = "tokyo";
 
@@ -91,7 +88,7 @@ public class KyotokimonoRentalTest {
 
 		// get price of dress because price dress of all person is same
 		price_dress = Integer
-				.parseInt(get_Attribute_Element(".//*[@id='plans_1_persons_0']/div/div[3]/p/span", "data-value"));
+				.parseInt(get_Attribute_Element(".//*[@id='person_amount']", "data-value"));
 		price_dress_web = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / num_person;
 
 		// click place and date
@@ -284,7 +281,7 @@ public class KyotokimonoRentalTest {
 		for (int j = 1; j <= 7; j++) {
 
 			for (int i = 1; i <= row; i++) {
-
+				System.out.println("finding cell row "+i+" column "+j);
 				indr_date = Integer.toString(i);
 				indc_date = Integer.toString(j);
 
@@ -305,7 +302,7 @@ public class KyotokimonoRentalTest {
 
 				DateText = DE.getText();
 			
-				if (assertDate() || ("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
+				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
 					DE.click();

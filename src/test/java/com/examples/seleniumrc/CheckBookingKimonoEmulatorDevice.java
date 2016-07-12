@@ -46,7 +46,7 @@ public class CheckBookingKimonoEmulatorDevice {
 	@Before
 	public void setUp() throws Exception {
 
-		setupEmuatorDevice();
+		setupEmuatorDevice("Apple iPhone 4");
 
 	}
 
@@ -85,20 +85,21 @@ public class CheckBookingKimonoEmulatorDevice {
 
 		// get price of dress because price dress of all person is same
 		price_dress = Integer.parseInt(get_Attribute_Element(
-				".//*[@id='plans_1_persons_0']/div/div/div[5]/p/span",
+				".//*[@id='person_amount']",
 				"data-value"));
+		System.out.println(price_dress);
 		price_dress_web = Integer.parseInt(findCss("#total_cost_reduced")
 				.getAttribute("data-value")) / num_person;
-
+		System.out.println(price_dress_web);
 		// click place and date
 		if (!seLectShopAndDate(name_shop))
 			return;
 		Thread.sleep(1000);
 
 		// chooose option
-		// chooseOption(num_person);
-		//
-		// // check price option
+		 chooseOption(num_person);
+		
+		 // check price option
 		// Assert.assertEquals("[FAIL]-check price option", Boolean.TRUE,
 		// check_Price_OptionTable(num_person));
 		//
@@ -140,10 +141,10 @@ public class CheckBookingKimonoEmulatorDevice {
 
 	}
 
-	public void setupEmuatorDevice() throws InterruptedException {
+	public void setupEmuatorDevice(String device) throws InterruptedException {
 		// here creating our first map for deviceName
 		Map<String, String> mobileEmulation = new HashMap<String, String>();
-		mobileEmulation.put("deviceName", "Apple iPhone 5");
+		mobileEmulation.put("deviceName",device);
 
 		// here creating the second map with key mobileEmulation
 		Map<String, Object> chromeOptions = new HashMap<String, Object>();
@@ -330,7 +331,6 @@ public class CheckBookingKimonoEmulatorDevice {
 
 	public void scrollAndClick(WebElement element) throws InterruptedException {
 		int elementPosition = element.getLocation().getY();
-		System.out.println("element position " + elementPosition);
 		String js = String.format("window.scroll(0, %s)", elementPosition - 200);
 		((JavascriptExecutor) driver).executeScript(js);
 		Thread.sleep(500); 
