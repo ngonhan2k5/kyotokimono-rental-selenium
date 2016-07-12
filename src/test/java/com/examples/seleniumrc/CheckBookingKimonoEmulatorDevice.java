@@ -21,7 +21,7 @@ import com.examples.seleniumrc.util.PropertyReader;
 
 import org.openqa.selenium.JavascriptExecutor;
 
-public class checkBookingKimonoEmulatorDevice {
+public class CheckBookingKimonoEmulatorDevice {
 
 	WebDriver driver;
 	int num_person;
