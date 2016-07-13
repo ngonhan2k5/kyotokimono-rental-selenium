@@ -16,6 +16,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.examples.seleniumrc.util.PropertyReader;
@@ -48,7 +49,6 @@ public class KyotokimonoRentalTest {
 		driver.manage().window().maximize();
 		driver.get("https://kyotokimono-rental.com/reserve");
 		Thread.sleep(4000);
-	
 
 	}
 
@@ -64,13 +64,13 @@ public class KyotokimonoRentalTest {
 
 		num_person = 2;
 
-		//name_shop = "kyoto";
-		 name_shop = "gionshijo";
+		// name_shop = "kyoto";
+		//name_shop = "gionshijo";
 		// name_shop = "osaka";
 		// name_shop = "tokyo";
 
 		// name_shop = "kamakura";
-		// name_shop = "kinkakuji";
+		 name_shop = "kinkakuji";
 		// name_shop = "shinkyogoku";
 		// name_shop = "kiyomizuzaka";
 
@@ -87,8 +87,7 @@ public class KyotokimonoRentalTest {
 		// Thread.sleep(2000);
 
 		// get price of dress because price dress of all person is same
-		price_dress = Integer
-				.parseInt(get_Attribute_Element(".//*[@id='person_amount']", "data-value"));
+		price_dress = Integer.parseInt(get_Attribute_Element(".//*[@id='person_amount']", "data-value"));
 		price_dress_web = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / num_person;
 
 		// click place and date
@@ -136,30 +135,29 @@ public class KyotokimonoRentalTest {
 				.println("***************************************end test********************************************");
 
 	}
-	
+
 	public void setupEmuatorDevice() throws InterruptedException {
 		// here creating our first map for deviceName
-				Map<String, String> mobileEmulation = new HashMap<String, String>();
-				mobileEmulation.put("deviceName", "Apple iPhone 5");
-				
-				//here creating the second map with key mobileEmulation
-				Map<String, Object> chromeOptions = new HashMap<String, Object>();
-				chromeOptions.put("mobileEmulation", mobileEmulation);
-				
-				//setting DesiredCapabilities for chrome
-				DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-				capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
-				
-				
-				String driverUrl = PropertyReader.getValue("chromedriver");
-				System.setProperty("webdriver.chrome.driver", driverUrl);
-				driver = new ChromeDriver(capabilities);
-				driver.manage().window().maximize();
-				
-				//opting mobile website...
-				driver.get("https://kyotokimono-rental.com/reserve");
-				//TimeLoadPage("https://kyotokimono-rental.com/reserve");
-				waitForPageLoaded();
+		Map<String, String> mobileEmulation = new HashMap<String, String>();
+		mobileEmulation.put("deviceName", "Apple iPhone 5");
+
+		// here creating the second map with key mobileEmulation
+		Map<String, Object> chromeOptions = new HashMap<String, Object>();
+		chromeOptions.put("mobileEmulation", mobileEmulation);
+
+		// setting DesiredCapabilities for chrome
+		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+		capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+
+		String driverUrl = PropertyReader.getValue("chromedriver");
+		System.setProperty("webdriver.chrome.driver", driverUrl);
+		driver = new ChromeDriver(capabilities);
+		driver.manage().window().maximize();
+
+		// opting mobile website...
+		driver.get("https://kyotokimono-rental.com/reserve");
+		// TimeLoadPage("https://kyotokimono-rental.com/reserve");
+		waitForPageLoaded();
 	}
 
 	public void waitForPageLoaded() {
@@ -281,7 +279,7 @@ public class KyotokimonoRentalTest {
 		for (int j = 1; j <= 7; j++) {
 
 			for (int i = 1; i <= row; i++) {
-				System.out.println("finding cell row "+i+" column "+j);
+				System.out.println("finding cell row " + i + " column " + j);
 				indr_date = Integer.toString(i);
 				indc_date = Integer.toString(j);
 
@@ -301,7 +299,7 @@ public class KyotokimonoRentalTest {
 				DE = findXpath(DateString);
 
 				DateText = DE.getText();
-			
+
 				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
@@ -309,6 +307,8 @@ public class KyotokimonoRentalTest {
 					if (assertDate())
 						continue;
 					else {
+						indc_first_selected_date = j;
+						indr_first_selected_date = i;
 						return true;
 					}
 				}
@@ -321,12 +321,12 @@ public class KyotokimonoRentalTest {
 	// Click another week if have not select a date whole table
 	public void chooseRanDomDate() throws InterruptedException {
 
-//		int i = 1;
-//		while (i <= 9) {
-//			clickButtonXpath(".//*[@id='page-next']");
-//			Thread.sleep(3000);
-//			i++;
-//		}
+		 int i = 1;
+		 while (i <= 8) {
+		 clickButtonXpath(".//*[@id='page-next']");
+		 Thread.sleep(3000);
+		 i++;
+		 }
 		while (!chooseRanDomDateOneTable()) {
 			clickButtonXpath(".//*[@id='page-next']");
 			Thread.sleep(3000);
@@ -435,7 +435,7 @@ public class KyotokimonoRentalTest {
 		int sum = 0, j;
 
 		for (j = beg; j <= end; j++) {
-
+			
 			b = Integer.toString(j);
 			linkOp = s + b + "]/input";
 
@@ -577,14 +577,14 @@ public class KyotokimonoRentalTest {
 
 	// get all selected cell of date table
 	public int getSelectedCellDateTable() throws InterruptedException {
-		int count_cell = 0, i, j, stop = 0;
+		int count_cell = 0, i, j;
 		int row = getRowTableDate(".//*[@id='choose-date']/div[2]/div/table/tbody/tr");
 		String a, b, attclass, parentClass;
 		WebElement ele;
 
 		// get the last select date of table
-		for (j = 1; j <= 7; j++) {
-			for (i = 1; i <= row && stop <= row - indr_first_selected_date + 1; i++) {
+		for (j = indc_first_selected_date; j <= 7; j++) {
+			for (i = indr_first_selected_date; i <= row; i++) {
 				a = Integer.toString(i);
 				b = Integer.toString(j);
 
@@ -601,11 +601,6 @@ public class KyotokimonoRentalTest {
 				attclass = ele.getAttribute("class");
 				if ("hour selected".equals(attclass)) {
 					count_cell++;
-					stop++;
-					if (count_cell == 1) {
-						indr_first_selected_date = i;
-						indc_first_selected_date = j;
-					}
 					indr_last_seleted_date = i;
 					indc_last_seleted_date = j;
 				}
@@ -817,19 +812,18 @@ public class KyotokimonoRentalTest {
 
 		ele = findXpath((".//*[@id='Book_rep_addr01']"));
 		ele.sendKeys("1234567890");
-		// click to choose birthday
-
-		clickButtonXpath(".//*[@id='select2-Book_birthday_year-container']");
-		clickButtonXpath(".//*[@id='Book_birthday_year']/option[4]");
-
-		clickButtonXpath(".//*[@id='select2-Book_birthday_month-container']");
-		clickButtonXpath(".//*[@id='Book_birthday_month']/option[4]");
-
-		clickButtonXpath(".//*[@id='select2-Book_birthday_day-container']");
-		clickButtonXpath(".//*[@id='Book_birthday_day']/option[4]");
-
-		clickButtonXpath(".//*[@id='Book_source_id']");
-		clickButtonXpath(".//*[@id='Book_source_id']/option[3]");
+		Thread.sleep(200);
+		// click to choose birthday		
+		Select dropdownboxyear = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_year]']")));
+		dropdownboxyear.selectByIndex(30);
+		Select dropdownboxmonth = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_month]']")));
+		dropdownboxmonth.selectByIndex(11);
+		Select dropdownboxday = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_day]']")));
+		dropdownboxday.selectByIndex(20);
+		//choose chanel
+		Select dropdownboxchanel= new Select(driver.findElement(By.cssSelector("[name='Book[source_id]']")));
+		dropdownboxchanel.selectByIndex(2);
+		
 
 	}
 

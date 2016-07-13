@@ -11,6 +11,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import com.examples.seleniumrc.util.PropertyReader;
 
@@ -89,7 +90,7 @@ public class YukataReantalTest {
 
 		// get price of dress because price dress of all person is same
 		price_dress = Integer
-				.parseInt(get_Attribute_Element(".//*[@id='person_amount']", "data-value"));
+				.parseInt(getAttributeElement(".//*[@id='person_amount']", "data-value"));
 		price_dress_web = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / num_person;
 
 		// click place and date
@@ -101,7 +102,7 @@ public class YukataReantalTest {
 		chooseOption(num_person);
 
 		// check price option
-		Assert.assertEquals("[FAIL]-check price option", Boolean.TRUE, check_Price_OptionTable(num_person));
+		Assert.assertEquals("[FAIL]-check price option", Boolean.TRUE, checkPriceOptionTable(num_person));
 
 		Assert.assertEquals("[FAIL]-check price of photo table", Boolean.TRUE, checkPricePhotoTable());
 
@@ -198,8 +199,8 @@ public class YukataReantalTest {
 
 	// this function is only to use verify price option , not for date table
 	// because it is only have data-checked attribute
-	public Boolean verify_Checked(String idButton) throws InterruptedException {
-		String str = get_Attribute_Element(idButton, "data-checked");
+	public Boolean verifyChecked(String idButton) throws InterruptedException {
+		String str = getAttributeElement(idButton, "data-checked");
 		if (str == null) {
 			return false;
 		}
@@ -220,7 +221,7 @@ public class YukataReantalTest {
 	}
 
 	// get attribute by create a element and find xpath
-	public String get_Attribute_Element(String s, String attb) throws InterruptedException {
+	public String getAttributeElement(String s, String attb) throws InterruptedException {
 		WebElement e = driver.findElement(By.xpath(s));
 		String result = e.getAttribute(attb);
 		return result;
@@ -241,7 +242,7 @@ public class YukataReantalTest {
 				indc_date = Integer.toString(j);
 
 				// find class name of weekdays
-				parentClass = get_Attribute_Element(
+				parentClass = getAttributeElement(
 						".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indr_date + "]", "class");
 				// System.out.println("tên class day:" + parentClass);
 
@@ -262,6 +263,8 @@ public class YukataReantalTest {
 					if (assertDate())
 						continue;
 					else {
+						indc_first_selected_date=j;
+						indr_first_selected_date=i;
 						return true;
 					}
 				}
@@ -372,14 +375,14 @@ public class YukataReantalTest {
 
 	}
 
-	public int getPrice_TableOption(String pricetext) throws InterruptedException {
+	public int getPriceTableOption(String pricetext) throws InterruptedException {
 
 		WebElement a = findXpath(pricetext);
 		int pr = Integer.parseInt(a.getAttribute("data-value"));
 		return pr;
 	}
 
-	public int get_Total_Price_TableOption(String s, int beg, int end) throws InterruptedException {
+	public int getTotalPriceTableOption(String s, int beg, int end) throws InterruptedException {
 		String b, linkOp, item1, item2;
 		int sum = 0, j;
 
@@ -388,11 +391,11 @@ public class YukataReantalTest {
 			b = Integer.toString(j);
 			linkOp = s + b + "]/input";
 
-			if (verify_Checked(linkOp)) {
-				sum = sum + getPrice_TableOption(linkOp);
+			if (verifyChecked(linkOp)) {
+				sum = sum + getPriceTableOption(linkOp);
 				// add item checked in list option
 				item1 = findXpath(s + b + "]/label").getText();
-				item2 = " ￥" + get_Attribute_Element(s + b + "]/input", "data-value");
+				item2 = " ￥" + getAttributeElement(s + b + "]/input", "data-value");
 				item1 = item1 + item2;
 				OptionBookingList.add(item1);
 
@@ -402,22 +405,22 @@ public class YukataReantalTest {
 
 	}
 
-	public Boolean check_Price_OptionTable_person(int Locationperson) throws InterruptedException {
+	public Boolean checkPriceOptionTable_person(int Locationperson) throws InterruptedException {
 		String a;
 		int sum = 0, SumTotal;
 		a = Integer.toString(Locationperson);
 
 		sum = sum
-				+ get_Total_Price_TableOption(
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[3]/ul/li[", 3, 5)
-				+ get_Total_Price_TableOption(
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[5]/ul/li[", 3, 5)
-				+ get_Total_Price_TableOption(
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/ul[1]/li[", 2, 3)
-				+ get_Total_Price_TableOption(
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/ul[2]/li[", 2, 5);
 
-		SumTotal = getPrice_TableOption(
+		SumTotal = getPriceTableOption(
 				".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/div/span");
 
 		if (sum == SumTotal) {
@@ -429,9 +432,9 @@ public class YukataReantalTest {
 
 	}
 
-	public Boolean check_Price_OptionTable(int numberperson) throws InterruptedException {
+	public Boolean checkPriceOptionTable(int numberperson) throws InterruptedException {
 		for (int i = 0; i < numberperson; i++) {
-			if (!check_Price_OptionTable_person(i)) {
+			if (!checkPriceOptionTable_person(i)) {
 				return false;
 			}
 
@@ -488,7 +491,7 @@ public class YukataReantalTest {
 				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div/table/tbody/tr/td[5]/ul/li[", 2, 4)
 				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div/table/tbody/tr/td[7]/ul/li[", 2, 6);
 
-		sum = Integer.parseInt(get_Attribute_Element(".//*[@id='book_option_cost']", "data-value"));
+		sum = Integer.parseInt(getAttributeElement(".//*[@id='book_option_cost']", "data-value"));
 		if (sum == sum_photo) {
 			return true;
 		} else {
@@ -538,18 +541,18 @@ public class YukataReantalTest {
 
 	// get all selected cell of date table
 	public int getSelectedCellDateTable() throws InterruptedException {
-		int count_cell = 0, i, j, stop = 0;
+		int count_cell = 0, i, j;
 		int row = getRowTableDate(".//*[@id='choose-date']/div[2]/div/table/tbody/tr");
 		String a, b, attclass, parentClass;
 		WebElement ele;
 
 		// get the last select date of table
-		for (j = 1; j <= 7; j++) {
-			for (i = 1; i <= row && stop <= row - indr_first_selected_date + 1; i++) {
+		for (j = indc_first_selected_date; j <= 7; j++) {
+			for (i = indr_first_selected_date; i <= row; i++) {
 				a = Integer.toString(i);
 				b = Integer.toString(j);
 
-				parentClass = get_Attribute_Element(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + a + "]",
+				parentClass = getAttributeElement(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + a + "]",
 						"class");
 
 				// compare the class name of current DE element is like 'thead'
@@ -562,11 +565,6 @@ public class YukataReantalTest {
 				attclass = ele.getAttribute("class");
 				if ("hour selected".equals(attclass)) {
 					count_cell++;
-					stop++;
-					if (count_cell == 1) {
-						indr_first_selected_date = i;
-						indc_first_selected_date = j;
-					}
 					indr_last_seleted_date = i;
 					indc_last_seleted_date = j;
 				}
@@ -583,7 +581,7 @@ public class YukataReantalTest {
 			return 0;
 		}
 		xpath_cell = xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]/div/div/span[2]";
-		String feecellclass = get_Attribute_Element(xpath_cell, "class");
+		String feecellclass = getAttributeElement(xpath_cell, "class");
 
 		if ("discount".equals(feecellclass)) {
 
@@ -603,7 +601,7 @@ public class YukataReantalTest {
 		String get_title_var, date_var, time_first_date, time_last_date;
 		String hour_last_time, min_last_time;
 
-		date_var = get_Attribute_Element(
+		date_var = getAttributeElement(
 				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_first_selected_date)
 						+ "]/td[" + Integer.toString(indc_first_selected_date) + "]/div",
 				"data-time_date");
@@ -612,11 +610,11 @@ public class YukataReantalTest {
 		date_var = date_var.substring(5);// get 6-9
 		date_var = date_var.replace("-", "/");
 
-		time_first_date = get_Attribute_Element(
+		time_first_date = getAttributeElement(
 				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_first_selected_date)
 						+ "]/td[" + Integer.toString(indc_first_selected_date) + "]/div",
 				"data-time_hour");
-		time_last_date = get_Attribute_Element(
+		time_last_date = getAttributeElement(
 				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_last_seleted_date)
 						+ "]/td[" + Integer.toString(indc_last_seleted_date) + "]/div",
 				"data-time_hour");
@@ -647,7 +645,7 @@ public class YukataReantalTest {
 		int price_cell;
 
 		xpath_selected = xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]/div";
-		hour_cell = get_Attribute_Element(xpath_selected, "data-time_hour");
+		hour_cell = getAttributeElement(xpath_selected, "data-time_hour");
 
 		if (pr > 0) {
 
@@ -732,10 +730,10 @@ public class YukataReantalTest {
 		for (int i = indr_first_selected_date; i < indr_last_seleted_date; i++) {
 
 			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(i) + "]";
-			if (get_Attribute_Element(xpath_cell, "class").equals("thead")) {
+			if (getAttributeElement(xpath_cell, "class").equals("thead")) {
 				continue;
 			}
-			if ("hour selected".equals(get_Attribute_Element(
+			if ("hour selected".equals(getAttributeElement(
 					xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]" + "/div", "class"))) {
 				num_cell = Integer.parseInt(
 						findXpath((xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]/div/div/span"))
@@ -778,19 +776,18 @@ public class YukataReantalTest {
 
 		ele = findXpath((".//*[@id='Book_rep_addr01']"));
 		ele.sendKeys("1234567890");
-		// click to choose birthday
-
-		clickButtonXpath(".//*[@id='select2-Book_birthday_year-container']");
-		clickButtonXpath(".//*[@id='Book_birthday_year']/option[4]");
-
-		clickButtonXpath(".//*[@id='select2-Book_birthday_month-container']");
-		clickButtonXpath(".//*[@id='Book_birthday_month']/option[4]");
-
-		clickButtonXpath(".//*[@id='select2-Book_birthday_day-container']");
-		clickButtonXpath(".//*[@id='Book_birthday_day']/option[4]");
-
-		clickButtonXpath(".//*[@id='Book_source_id']");
-		clickButtonXpath(".//*[@id='Book_source_id']/option[3]");
+		Thread.sleep(200);
+		// click to choose birthday		
+		Select dropdownboxyear = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_year]']")));
+		dropdownboxyear.selectByIndex(30);
+		Select dropdownboxmonth = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_month]']")));
+		dropdownboxmonth.selectByIndex(11);
+		Select dropdownboxday = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_day]']")));
+		dropdownboxday.selectByIndex(20);
+		//choose chanel
+		Select dropdownboxchanel= new Select(driver.findElement(By.cssSelector("[name='Book[source_id]']")));
+		dropdownboxchanel.selectByIndex(2);
+		
 
 	}
 
@@ -818,7 +815,7 @@ public class YukataReantalTest {
 		}
 
 		// add with photo price
-		sum_price += Integer.parseInt(get_Attribute_Element(".//*[@id='book_option_cost']", "data-value"));
+		sum_price += Integer.parseInt(getAttributeElement(".//*[@id='book_option_cost']", "data-value"));
 		// add early fee or discount fee
 		sum_price += ear_dis_fee;
 
@@ -913,14 +910,14 @@ public class YukataReantalTest {
 	public void getInfoCustomer() throws InterruptedException {
 		// get they in booking page
 
-		name_customer = get_Attribute_Element(".//*[@id='Book_rep_name']", "value");
-		email_customer = get_Attribute_Element(".//*[@id='Book_rep_email']", "value");
-		phone_customer = get_Attribute_Element(".//*[@id='Book_rep_tel01']", "value");
-		address_customer = get_Attribute_Element(".//*[@id='Book_rep_addr01']", "value");
-		postercode_customer = get_Attribute_Element(".//*[@id='Book_rep_postal_code']", "value");
-		birth_customer = get_Attribute_Element(".//*[@id='select2-Book_birthday_year-container']", "title") + "/"
-				+ get_Attribute_Element(".//*[@id='select2-Book_birthday_month-container']", "title") + "/"
-				+ get_Attribute_Element(".//*[@id='select2-Book_birthday_day-container']", "title");
+		name_customer = getAttributeElement(".//*[@id='Book_rep_name']", "value");
+		email_customer = getAttributeElement(".//*[@id='Book_rep_email']", "value");
+		phone_customer = getAttributeElement(".//*[@id='Book_rep_tel01']", "value");
+		address_customer = getAttributeElement(".//*[@id='Book_rep_addr01']", "value");
+		postercode_customer = getAttributeElement(".//*[@id='Book_rep_postal_code']", "value");
+		birth_customer = getAttributeElement(".//*[@id='select2-Book_birthday_year-container']", "title") + "/"
+				+ getAttributeElement(".//*[@id='select2-Book_birthday_month-container']", "title") + "/"
+				+ getAttributeElement(".//*[@id='select2-Book_birthday_day-container']", "title");
 		date_booking = "2016/"
 				+ findXpath(".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[1]").getText().trim();
 		shop_name = getSelectedShop();
