@@ -48,7 +48,7 @@ public class KyotokimonoRentalTest {
 		driver.manage().window().maximize();
 		driver.get("https://kyotokimono-rental.com/reserve");
 		Thread.sleep(4000);
-	//	setupEmuatorDevice();
+	
 
 	}
 

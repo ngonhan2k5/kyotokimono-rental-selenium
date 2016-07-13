@@ -60,14 +60,14 @@ public class CheckBookingKimonoEmulatorDevice {
 		System.out
 				.println("*********************************Test kimono standard*******************************************");
 
-		num_person = 2;
+		num_person = 8;
 
 		// name_shop = "kyoto";
-		name_shop = "gionshijo";
+		//name_shop = "gionshijo";
 		// name_shop = "osaka";
-		// name_shop = "tokyo";
+		 //name_shop = "tokyo";
 
-		// name_shop = "kamakura";
+		 name_shop = "kamakura";
 		// name_shop = "kinkakuji";
 		// name_shop = "shinkyogoku";
 		// name_shop = "kiyomizuzaka";
@@ -84,22 +84,20 @@ public class CheckBookingKimonoEmulatorDevice {
 		waitForPageLoaded();
 
 		// get price of dress because price dress of all person is same
-		price_dress = Integer.parseInt(get_Attribute_Element(
-				".//*[@id='person_amount']",
-				"data-value"));
+		price_dress = Integer.parseInt(get_Attribute_Element(".//*[@id='person_amount']", "data-value"));
 		System.out.println(price_dress);
-		price_dress_web = Integer.parseInt(findCss("#total_cost_reduced")
-				.getAttribute("data-value")) / num_person;
+		price_dress_web = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / num_person;
 		System.out.println(price_dress_web);
+
 		// click place and date
 		if (!seLectShopAndDate(name_shop))
 			return;
 		Thread.sleep(1000);
 
 		// chooose option
-		 chooseOption(num_person);
-		
-		 // check price option
+		// chooseOption(num_person);
+		//
+		// // check price option
 		// Assert.assertEquals("[FAIL]-check price option", Boolean.TRUE,
 		// check_Price_OptionTable(num_person));
 		//
@@ -144,7 +142,7 @@ public class CheckBookingKimonoEmulatorDevice {
 	public void setupEmuatorDevice(String device) throws InterruptedException {
 		// here creating our first map for deviceName
 		Map<String, String> mobileEmulation = new HashMap<String, String>();
-		mobileEmulation.put("deviceName",device);
+		mobileEmulation.put("deviceName", device);
 
 		// here creating the second map with key mobileEmulation
 		Map<String, Object> chromeOptions = new HashMap<String, Object>();
@@ -289,7 +287,6 @@ public class CheckBookingKimonoEmulatorDevice {
 		for (int j = 1; j <= 7; j++) {
 
 			for (int i = 1; i <= row; i++) {
-				
 				indr_date = Integer.toString(i);
 				indc_date = Integer.toString(j);
 
@@ -315,7 +312,8 @@ public class CheckBookingKimonoEmulatorDevice {
 						|| ("☎").equals(DateText)) {
 					// nothing
 				} else {
-					scrollAndClick(DE);
+
+					scrollAndClick(DE,3000);
 					if (assertDate())
 						continue;
 					else {
@@ -329,11 +327,13 @@ public class CheckBookingKimonoEmulatorDevice {
 		return false;
 	}
 
-	public void scrollAndClick(WebElement element) throws InterruptedException {
-		int elementPosition = element.getLocation().getY();
-		String js = String.format("window.scroll(0, %s)", elementPosition - 200);
-		((JavascriptExecutor) driver).executeScript(js);
-		Thread.sleep(500); 
+	public void scrollAndClick(WebElement element,int timesleep) throws InterruptedException {
+		String scrollElementIntoMiddle = "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
+				+ "var elementTop = arguments[0].getBoundingClientRect().top;"
+				+ "window.scrollBy(0, elementTop-(viewPortHeight/2));";
+
+		((JavascriptExecutor) driver).executeScript(scrollElementIntoMiddle, element);
+		Thread.sleep(timesleep);
 		element.click();
 	}
 
@@ -341,14 +341,15 @@ public class CheckBookingKimonoEmulatorDevice {
 	public void chooseRanDomDate() throws InterruptedException {
 
 		int i = 1;
-		while (i <= 7) {
-			clickButtonXpath(".//*[@id='page-next']");
+		while (i <= 8) {
+			WebElement ele=findXpath(".//*[@id='page-next']");
+			scrollAndClick(ele,0);
 			Thread.sleep(3000);
 			i++;
 		}
 		while (!chooseRanDomDateOneTable()) {
-			System.out.println("next table ");
-			clickButtonXpath(".//*[@id='page-next']");
+			WebElement ele=findXpath(".//*[@id='page-next']");
+			scrollAndClick(ele,0);
 			Thread.sleep(3000);
 			chooseRanDomDateOneTable();
 		}
