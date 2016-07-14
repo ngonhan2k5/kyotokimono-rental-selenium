@@ -18,8 +18,8 @@ import com.examples.seleniumrc.util.PropertyReader;
 public class CheckNameAndPriceYukata {
 
 	WebDriver driver;
-	List listshopname = new ArrayList();
-	List listshopname_page2 = new ArrayList();
+	List listShopName = new ArrayList();
+	List listShopNamePage2 = new ArrayList();
 	List listIdYukata = new ArrayList(
 			Arrays.asList("12", "13", "14", "15", "79", "16", "18", "17", "20", "21", "22", "23"));
 	//lost id 19 because it is in table with id 17
@@ -70,7 +70,7 @@ public class CheckNameAndPriceYukata {
 			String idpriceweb, String orderdress) throws InterruptedException {
 		String namedress, namedress_page2, price, price_page2, pricepayweb, pricepayweb_page2;
 
-		waitFindCSSElementLoaded(".yukata");
+		waitFindCssElementLoaded(".yukata");
 		namedress = findCss(idnamedress).getText().replace("♥", "").replace("\n", "");
 		price = getPriceKimono(idprice);
 		pricepayweb = getPriceKimono(idpriceweb);
@@ -91,14 +91,14 @@ public class CheckNameAndPriceYukata {
 				.findElement(By
 						.xpath(".//*[@id='sec-booking-chooseplan']/div/table/tbody/tr/td[1]/div/table/tbody/tr[2]/td[2]"))
 				.getText();
-		if (!listshopname.containsAll(listshopname_page2) || !(listshopname.size() == listshopname_page2.size())) {
+		if (!listShopName.containsAll(listShopNamePage2) || !(listShopName.size() == listShopNamePage2.size())) {
 			System.out.println("[FAIL:shop names" + orderdress + " are NOT match]");
-			System.out.println(listshopname);
-			System.out.println(listshopname_page2);
+			System.out.println(listShopName);
+			System.out.println(listShopNamePage2);
 			return false;
 		}
-		listshopname.clear();
-		listshopname_page2.clear();
+		listShopName.clear();
+		listShopNamePage2.clear();
 		if("#list_plans_23SelectBoxItArrowContainer".equals(idselectbox))
 		{
 			;// name dress of select box's id is 23 ,is sort than name dress in page 2->pass
@@ -127,7 +127,7 @@ public class CheckNameAndPriceYukata {
 			return false;
 		}
 
-		backandassertMessage();
+		backAndAssertMessage();
 		return true;
 
 	}
@@ -142,7 +142,7 @@ public class CheckNameAndPriceYukata {
 
 	}
 	
-	public void waitFindCSSElementLoaded(String idelement) throws InterruptedException {
+	public void waitFindCssElementLoaded(String idelement) throws InterruptedException {
 		while(findCss(idelement)==null)
 		{
 			Thread.sleep(100);
@@ -153,7 +153,7 @@ public class CheckNameAndPriceYukata {
 		List<WebElement> AreaElements = driver.findElements(By.cssSelector("#choose-shop li"));
 		for (WebElement element : AreaElements) {
 			String nameshop = element.findElement(By.cssSelector(".text-shop")).getText().replace("\n", "");
-			listshopname_page2.add(nameshop);
+			listShopNamePage2.add(nameshop);
 
 		}
 	}
@@ -167,9 +167,9 @@ public class CheckNameAndPriceYukata {
 			if (!liClass.contains("disable")) {
 				nameshop = element.findElement(By.cssSelector(".text-shop")).getText().replace("\n", "");
 				if ("京都駅前京都タワー店".equals(nameshop)) {
-					listshopname.add("京都駅前店京都タワー店");
+					listShopName.add("京都駅前店京都タワー店");
 				} else
-					listshopname.add(nameshop);
+					listShopName.add(nameshop);
 			}
 		}
 
@@ -184,7 +184,7 @@ public class CheckNameAndPriceYukata {
 		return price;
 	}
 
-	public void backandassertMessage() throws InterruptedException {
+	public void backAndAssertMessage() throws InterruptedException {
 		// click back button
 		findCss("#booking_back").click();
 		// assert message

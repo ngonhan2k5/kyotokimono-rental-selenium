@@ -25,8 +25,8 @@ import com.sun.jna.platform.win32.OaIdl.IDLDESC;
 public class CheckNameAndPriceKimono {
 
 	WebDriver driver;
-	List listshopname = new ArrayList();
-	List listshopname_page2 = new ArrayList();
+	List listShopName = new ArrayList();
+	List listShopNamePage2 = new ArrayList();
 	List listIdKimono = new ArrayList(
 			Arrays.asList("1", "2", "26", "3", "39", "35", "36", "4", "6", "7", "37", "8", "40"));
 
@@ -72,7 +72,7 @@ public class CheckNameAndPriceKimono {
 		String namedress, namedress_page2, price, price_page2, pricepayweb, pricepayweb_page2;
 
 		// click tab kimono
-		waitFindCSSElementLoaded(".kimono");
+		waitFindCssElementLoaded(".kimono");
 		findCss(".kimono").click();
 		Thread.sleep(500);
 
@@ -93,14 +93,14 @@ public class CheckNameAndPriceKimono {
 		Thread.sleep(500);
 		namedress_page2 = findCss(".plan_name.kimono").getText();
 
-		if (!listshopname.containsAll(listshopname_page2) || !(listshopname.size() == listshopname_page2.size())) {
+		if (!listShopName.containsAll(listShopNamePage2) || !(listShopName.size() == listShopNamePage2.size())) {
 			System.out.println("[FAIL:shop names" + orderdress + " are NOT match]");
-			System.out.println(listshopname);
-			System.out.println(listshopname_page2);
+			System.out.println(listShopName);
+			System.out.println(listShopNamePage2);
 			return false;
 		}
-		listshopname.clear();
-		listshopname_page2.clear();
+		listShopName.clear();
+		listShopNamePage2.clear();
 		if (!namedress.equals(namedress_page2)) {
 			System.out.println("[FAIL]-names of kimono are NOT match");
 			System.out.println(namedress);
@@ -124,7 +124,7 @@ public class CheckNameAndPriceKimono {
 			return false;
 		}
 
-		backandassertMessage();
+		backAndAssertMessage();
 		return true;
 
 	}
@@ -138,7 +138,7 @@ public class CheckNameAndPriceKimono {
 
 	}
 	
-	public void waitFindCSSElementLoaded(String idelement) throws InterruptedException {
+	public void waitFindCssElementLoaded(String idelement) throws InterruptedException {
 		while(findCss(idelement)==null)
 		{
 			Thread.sleep(100);
@@ -149,7 +149,7 @@ public class CheckNameAndPriceKimono {
 		List<WebElement> AreaElements = driver.findElements(By.cssSelector("#choose-shop li"));
 		for (WebElement element : AreaElements) {
 			String nameshop = element.findElement(By.cssSelector(".text-shop")).getText().replace("\n", "");
-			listshopname_page2.add(nameshop);
+			listShopNamePage2.add(nameshop);
 
 		}
 	}
@@ -163,9 +163,9 @@ public class CheckNameAndPriceKimono {
 			if (!liClass.contains("disable")) {
 				nameshop = element.findElement(By.cssSelector(".text-shop")).getText().replace("\n", "");
 				if ("京都駅前京都タワー店".equals(nameshop)) {
-					listshopname.add("京都駅前店京都タワー店");
+					listShopName.add("京都駅前店京都タワー店");
 				} else
-					listshopname.add(nameshop);
+					listShopName.add(nameshop);
 			}
 		}
 
@@ -180,7 +180,7 @@ public class CheckNameAndPriceKimono {
 		return price;
 	}
 
-	public void backandassertMessage() throws InterruptedException {
+	public void backAndAssertMessage() throws InterruptedException {
 		// click back button
 		findCss("#booking_back").click();
 		// assert message
