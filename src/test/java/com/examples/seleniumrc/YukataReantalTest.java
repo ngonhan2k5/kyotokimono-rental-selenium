@@ -465,16 +465,16 @@ public class YukataReantalTest {
 				}
 
 				// add item to list to check with detail booking
-				if ("book_options[60]".equals(e.getAttribute("id")) || !"0".equals(e.getAttribute("data-last-val"))) {
-					item = findXpath(s + Integer.toString(i) + "]/div[1]/div[1]/label[1]").getText();
-					if (e.getAttribute("data-last-val") != "1") {
-						item += " x" + e.getAttribute("data-last-val");
-						// if customer choose amount more than 1 it is printed
-						// amount in detail page
-					}
-					item += " " + "￥" + Integer.toString(sum_1_choose);
-					optionBookingList.add(item);
+
+				item = findXpath(s + Integer.toString(i) + "]/div[1]/div[1]/label[1]").getText();
+				if (!"1".equals(e.getAttribute("data-last-val").trim())) {
+					item += " x" + e.getAttribute("data-last-val");
+					// if customer choose amount more than 1 it is printed
+					// amount in detail page
 				}
+				item += " " + "￥" + Integer.toString(sum_1_choose);
+				optionBookingList.add(item);
+
 				sum += sum_1_choose;
 			}
 		}
@@ -1000,7 +1000,7 @@ public class YukataReantalTest {
 			}
 		}
 		if (!nameCustomer.equals(namecus_detail)) {
-			System.out.println("date detail customer in detail page  is wrong :" + namecus_detail);
+			System.out.println("name customer in detail page  is wrong :" + namecus_detail);
 			return false;
 		}
 		if (!emailCustomer.equals(emailcus_detail)) {
