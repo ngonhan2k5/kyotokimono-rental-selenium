@@ -65,12 +65,12 @@ public class KyotokimonoRentalTest {
 		num_person = 2;
 
 		// name_shop = "kyoto";
-		//name_shop = "gionshijo";
+		// name_shop = "gionshijo";
 		// name_shop = "osaka";
 		// name_shop = "tokyo";
 
 		// name_shop = "kamakura";
-		 name_shop = "kinkakuji";
+		name_shop = "kinkakuji";
 		// name_shop = "shinkyogoku";
 		// name_shop = "kiyomizuzaka";
 
@@ -321,12 +321,12 @@ public class KyotokimonoRentalTest {
 	// Click another week if have not select a date whole table
 	public void chooseRanDomDate() throws InterruptedException {
 
-		 int i = 1;
-		 while (i <= 8) {
-		 clickButtonXpath(".//*[@id='page-next']");
-		 Thread.sleep(3000);
-		 i++;
-		 }
+		int i = 1;
+		while (i <= 8) {
+			clickButtonXpath(".//*[@id='page-next']");
+			Thread.sleep(3000);
+			i++;
+		}
 		while (!chooseRanDomDateOneTable()) {
 			clickButtonXpath(".//*[@id='page-next']");
 			Thread.sleep(3000);
@@ -435,7 +435,7 @@ public class KyotokimonoRentalTest {
 		int sum = 0, j;
 
 		for (j = beg; j <= end; j++) {
-			
+
 			b = Integer.toString(j);
 			linkOp = s + b + "]/input";
 
@@ -498,8 +498,15 @@ public class KyotokimonoRentalTest {
 
 		for (int i = beg; i <= end; i++) {
 			e = findXpath((s + Integer.toString(i) + "]/select"));
-			sum_1_choose = (Integer.parseInt(e.getAttribute("data-last-val"))
-					* Integer.parseInt(e.getAttribute("data-value")));
+			if ("book_options[62]".equals(e.getAttribute("id")) || "book_options[63]".equals(e.getAttribute("id"))
+					|| "book_options[64]".equals(e.getAttribute("id"))) {
+				sum_1_choose = (Integer.parseInt(e.getAttribute("data-last-val")) - 1)
+						* (Integer.parseInt(e.getAttribute("data-value")) - 300)
+						+ Integer.parseInt(e.getAttribute("data-value"));
+			} else {
+				sum_1_choose = (Integer.parseInt(e.getAttribute("data-last-val"))
+						* Integer.parseInt(e.getAttribute("data-value")));
+			}
 			// add item to list to check with detail booking
 			if ("book_options[60]".equals(e.getAttribute("id")) || !"0".equals(e.getAttribute("data-last-val"))) {
 				item = findXpath(s + Integer.toString(i) + "]/div[1]/div[1]/label[1]").getText();
@@ -813,17 +820,16 @@ public class KyotokimonoRentalTest {
 		ele = findXpath((".//*[@id='Book_rep_addr01']"));
 		ele.sendKeys("1234567890");
 		Thread.sleep(200);
-		// click to choose birthday		
+		// click to choose birthday
 		Select dropdownboxyear = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_year]']")));
 		dropdownboxyear.selectByIndex(30);
 		Select dropdownboxmonth = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_month]']")));
 		dropdownboxmonth.selectByIndex(11);
 		Select dropdownboxday = new Select(driver.findElement(By.cssSelector("[name='Book[birthday_day]']")));
 		dropdownboxday.selectByIndex(20);
-		//choose chanel
-		Select dropdownboxchanel= new Select(driver.findElement(By.cssSelector("[name='Book[source_id]']")));
+		// choose chanel
+		Select dropdownboxchanel = new Select(driver.findElement(By.cssSelector("[name='Book[source_id]']")));
 		dropdownboxchanel.selectByIndex(2);
-		
 
 	}
 
