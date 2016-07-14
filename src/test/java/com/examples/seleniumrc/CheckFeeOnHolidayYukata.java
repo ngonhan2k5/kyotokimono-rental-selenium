@@ -14,19 +14,19 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import com.examples.seleniumrc.util.PropertyReader;
 
 
-public class HolidayFee {
+public class CheckFeeOnHolidayYukata {
 
 	WebDriver driver;
-	int num_person;
-	WebElement DE;
-	String name_shop;
+	int numPerson;
+	String nameShop;
 	List listHoliday = new ArrayList(Arrays.asList("2016/01/01", "2016/01/11", "2016/02/11", "2016/03/20", "2016/03/21",
 			"2016/04/29", "2016/05/03", "2016/05/04", "2016/05/05", "2016/07/18", "2016/09/19", "2016/09/22",
 			"2016/10/10", "2016/11/03", "2016/11/23", "2016/12/23", "2017/01/01", "2017/01/02", "2017/01/09",
 			"2017/02/11", "2017/03/20", "2017/04/29", "2017/05/03", "2017/05/04", "2017/05/05", "2017/07/17",
 			"2017/09/18", "2017/09/23", "2017/10/09", "2017/11/03", "2017/11/23", "2017/12/23"));
-	List listIdKimono = new ArrayList(
-			Arrays.asList("1", "2", "26", "3", "39", "35", "36", "4", "6", "7", "37", "8", "40"));
+
+	List listIdYukata = new ArrayList(
+			Arrays.asList("12", "13", "14", "15", "79", "16", "18", "17", "20", "21", "22", "23"));
 
 	@Before
 	public void setUp() throws Exception {
@@ -63,46 +63,50 @@ public class HolidayFee {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		num_person = 1;
+		numPerson = 1;
 
-		 name_shop = "kyoto";
-		// name_shop = "gionshijo";
-		// name_shop = "osaka";
-		//name_shop = "tokyo";
+		// nameShop = "kyoto";
+		 nameShop = "gionshijo";
+		// nameShop = "osaka";
+		//nameShop = "tokyo";
 
-		// name_shop = "kamakura";
-		// name_shop = "kinkakuji";
-		// name_shop = "shinkyogoku";
-		// name_shop = "kiyomizuzaka";
+		// nameShop = "kamakura";
+		// nameShop = "kinkakuji";
+		// nameShop = "shinkyogoku";
+		// nameShop = "kiyomizuzaka";
 
-		
-		checkDressHolidayFee(listIdKimono);
+		// click tab yukata
+		Thread.sleep(2000);
+		findCss(".yukata").click();
+		Thread.sleep(500);
+		checkDressHolidayFee(listIdYukata, "#add_plan_yukata");
 
 		System.out
 				.println("***************************************end test********************************************");
 
 	}
 
-	public void checkDressHolidayFee(List L) throws InterruptedException {
+	public void checkDressHolidayFee(List L, String nextbt) throws InterruptedException {
 		for (int i = 0; i < L.size(); i++) {
-			// click tab kimono
+			
+			// click tab yukata
 			Thread.sleep(2000);
-			findCss(".kimono").click();
+			findCss(".yukata").click();
 			Thread.sleep(500);
 			
 			String idplan = (String) L.get(i);
-			seLectNumberPerson(num_person, idplan);
+			seLectNumberPerson(numPerson, idplan);
 			System.out.println("checking plan "+idplan+".....");
 
 			// click next button
-			clickButtonCss("#add_plan");
+			clickButtonCss(nextbt);
 			waitForPageLoaded(driver.getCurrentUrl());
 
-			seLectShop(name_shop);
+			seLectShop(nameShop);
 			Thread.sleep(3000);
 
 			checkFeeDateTable();
-			backandassertMessage();
+			backAndAssertMessage();
 			
 		}
 
@@ -178,7 +182,7 @@ public class HolidayFee {
 					
 	}
 	
-	public void waitforCSSEleLoaded(String idButton) throws InterruptedException {
+	public void waitforCssEleLoaded(String idButton) throws InterruptedException {
 		while(driver.findElement(By.cssSelector(idButton))==null)
 		{
 			Thread.sleep(100);
@@ -200,13 +204,13 @@ public class HolidayFee {
 	}
 
 	// get attribute by create a element and find xpath
-	public String get_Attribute_Element_Xpath(String s, String attb) throws InterruptedException {
+	public String getAttributeElementXpath(String s, String attb) throws InterruptedException {
 		WebElement e = driver.findElement(By.xpath(s));
 		String result = e.getAttribute(attb);
 		return result;
 	}
 
-	public String get_Attribute_Element_CSS(String s, String attb) throws InterruptedException {
+	public String getAttributeElementCSS(String s, String attb) throws InterruptedException {
 		WebElement e = driver.findElement(By.cssSelector(s));
 		String result = e.getAttribute(attb);
 		return result;
@@ -215,7 +219,7 @@ public class HolidayFee {
 	public Boolean check7month30(int indr, int indc) throws InterruptedException {
 		String xpathcell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr) + "]" + "/td["
 				+ Integer.toString(indc) + "]/div";
-		String holidaytext = get_Attribute_Element_Xpath(xpathcell, "data-time_date");
+		String holidaytext = getAttributeElementXpath(xpathcell, "data-time_date");
 		if (holidaytext.equals("2016/7/30")) {
 			return true;
 		}
@@ -225,7 +229,7 @@ public class HolidayFee {
 	public Boolean checkHoliday(int indr, int indc) throws InterruptedException {
 		String xpathcell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr) + "]" + "/td["
 				+ Integer.toString(indc) + "]/div";
-		String holidaytext = get_Attribute_Element_Xpath(xpathcell, "data-time_date");
+		String holidaytext = getAttributeElementXpath(xpathcell, "data-time_date");
 		for (int i = 0; i < listHoliday.size(); i++) {
 			String dateele = (String) listHoliday.get(i);
 			if (holidaytext.equals(dateele)) {
@@ -241,7 +245,7 @@ public class HolidayFee {
 		String classthead = findXpath(
 				".//*[@id='choose-date']/div[2]/div/table/thead/tr/td[" + Integer.toString(indc) + "]")
 						.getAttribute("class");
-		String classname = get_Attribute_Element_Xpath(xpathcell, "class");
+		String classname = getAttributeElementXpath(xpathcell, "class");
 		if ("odd odd-new even-early h0900  first-split ".equals(classname)
 				|| "even even-new even-early h0930 ".equals(classname)) {
 			if ("sat".equals(classthead) || "sun".equals(classthead)) {
@@ -310,7 +314,7 @@ public class HolidayFee {
 			i++;
 			clickButtonXpath(".//*[@id='page-next']");
 			Thread.sleep(3000);
-			//waitforCSSEleLoaded("#choose-date");
+			//waitforCssEleLoaded("#choose-date");
 		}
 
 	}
@@ -360,7 +364,7 @@ public class HolidayFee {
 		return false;
 	}
 
-	public void backandassertMessage() throws InterruptedException {
+	public void backAndAssertMessage() throws InterruptedException {
 		// click back button
 		findCss("#booking_back").click();
 		// assert message

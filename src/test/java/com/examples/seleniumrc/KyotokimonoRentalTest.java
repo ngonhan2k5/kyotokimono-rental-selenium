@@ -26,20 +26,20 @@ import org.openqa.selenium.JavascriptExecutor;
 public class KyotokimonoRentalTest {
 
 	WebDriver driver;
-	int num_person;
-	WebElement DE;
-	String name_shop;
-	String xpath_Date_Element, indr_date, indc_date;
-	int indr_first_selected_date, indr_last_seleted_date, indc_first_selected_date, indc_last_seleted_date;
-	String name_customer, email_customer, phone_customer, address_customer, birth_customer, date_booking, shop_name,
-			postercode_customer, fee_eardis_booking;
-	int price_dress, price_dress_web, num_ear_dis = 0;
-	int ear_dis_fee = 0;
-	List OptionBookingList = new ArrayList();
-	List OptionDetailList = new ArrayList();
-	String totalprice_booking, totalprice_detail, totalprice_booking_payweb, totalprice_detail_payweb,
-			totalprice_booking_tax, totalprice_detail_tax, totalprice_booking_tax_web, totalprice_detail_tax_web;
-	int totalprice;
+	int numPerson;
+	WebElement dateElement;
+	String nameShop;
+	String xpathDateElement, indrDate, indcDate;
+	int indrFirstSelectedDate, indrLastSeletedDate, indcFirstSelectedDate, indcLastSeletedDate;
+	String nameCustomer, emailCustomer, phoneCustomer, addressCustomer, birthdayCustomer, dateBooking, shopName,
+			postercodeCustomer, feeEarlyDiscount;
+	int priceDress, priceDressWeb, numEarlyDiscount = 0;
+	int earDiscountFee = 0;
+	List optionBookingList = new ArrayList();
+	List optionDetailList = new ArrayList();
+	String totalPriceBooking, totalPriceDetail, totalPriceBookingPayWeb, totalPriceDetailPayWeb,
+			totalPriceBookingTax, totalPriceDetailTax, totalPriceBookingTaxWeb, totalPriceDetailTaxWeb;
+	int totalPrice;
 
 	@Before
 	public void setUp() throws Exception {
@@ -62,24 +62,24 @@ public class KyotokimonoRentalTest {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		num_person = 2;
+		numPerson = 2;
 
-		// name_shop = "kyoto";
-		// name_shop = "gionshijo";
-		// name_shop = "osaka";
-		// name_shop = "tokyo";
+		// nameShop = "kyoto";
+		// nameShop = "gionshijo";
+		// nameShop = "osaka";
+		// nameShop = "tokyo";
 
-		// name_shop = "kamakura";
-		name_shop = "kinkakuji";
-		// name_shop = "shinkyogoku";
-		// name_shop = "kiyomizuzaka";
+		// nameShop = "kamakura";
+		nameShop = "kinkakuji";
+		// nameShop = "shinkyogoku";
+		// nameShop = "kiyomizuzaka";
 
 		// click tab kimono
 		findCss(".kimono").click();
 		waitForPageLoaded();
 
 		// select people
-		seLectNumberPerson(num_person);
+		seLectNumberPerson(numPerson);
 
 		// click next button
 		clickButtonXpath(".//*[@id='formAddPlan']/div[1]/div/ul/li[1]/div[3]/div[2]/div[1]/a");
@@ -87,19 +87,19 @@ public class KyotokimonoRentalTest {
 		// Thread.sleep(2000);
 
 		// get price of dress because price dress of all person is same
-		price_dress = Integer.parseInt(get_Attribute_Element(".//*[@id='person_amount']", "data-value"));
-		price_dress_web = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / num_person;
+		priceDress = Integer.parseInt(getAttributeElement(".//*[@id='person_amount']", "data-value"));
+		priceDressWeb = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / numPerson;
 
 		// click place and date
-		if (!seLectShopAndDate(name_shop))
+		if (!seLectShopAndDate(nameShop))
 			return;
 		Thread.sleep(1000);
 
 		// chooose option
-		chooseOption(num_person);
+		chooseOption(numPerson);
 
 		// check price option
-		Assert.assertEquals("[FAIL]-check price option", Boolean.TRUE, check_Price_OptionTable(num_person));
+		Assert.assertEquals("[FAIL]-check price option", Boolean.TRUE, checkPriceOptionTable(numPerson));
 
 		Assert.assertEquals("[FAIL]-check price of photo table", Boolean.TRUE, checkPricePhotoTable());
 
@@ -107,8 +107,8 @@ public class KyotokimonoRentalTest {
 		Assert.assertEquals("[FAIL]-check Message Date  table", Boolean.TRUE, checkMessageDateTable());
 
 		// check total price in booking page
-		totalprice = checkTotalPriceBooking();
-		if (totalprice < 0) {
+		totalPrice = checkTotalPriceBooking();
+		if (totalPrice < 0) {
 			System.out.println("[FAIL]check total price is wrong");
 			return;
 		}
@@ -126,7 +126,7 @@ public class KyotokimonoRentalTest {
 		clickButtonXpath(".//*[@id='booking_confirm']");
 		Thread.sleep(1000);
 		// get list detail of booking page
-		getOptionDetailList();
+		getoptionDetailList();
 		// Thread.sleep(1000);
 
 		// check information of customer based on list booking and total price
@@ -241,8 +241,8 @@ public class KyotokimonoRentalTest {
 
 	// this function is only to use verify price option , not for date table
 	// because it is only have data-checked attribute
-	public Boolean verify_Checked(String idButton) throws InterruptedException {
-		String str = get_Attribute_Element(idButton, "data-checked");
+	public Boolean verifyChecked(String idButton) throws InterruptedException {
+		String str = getAttributeElement(idButton, "data-checked");
 		if (str == null) {
 			return false;
 		}
@@ -263,7 +263,7 @@ public class KyotokimonoRentalTest {
 	}
 
 	// get attribute by create a element and find xpath
-	public String get_Attribute_Element(String s, String attb) throws InterruptedException {
+	public String getAttributeElement(String s, String attb) throws InterruptedException {
 		WebElement e = driver.findElement(By.xpath(s));
 		String result = e.getAttribute(attb);
 		return result;
@@ -280,12 +280,12 @@ public class KyotokimonoRentalTest {
 
 			for (int i = 1; i <= row; i++) {
 				System.out.println("finding cell row " + i + " column " + j);
-				indr_date = Integer.toString(i);
-				indc_date = Integer.toString(j);
+				indrDate = Integer.toString(i);
+				indcDate = Integer.toString(j);
 
 				// find class name of weekdays
-				parentClass = get_Attribute_Element(
-						".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indr_date + "]", "class");
+				parentClass = getAttributeElement(
+						".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]", "class");
 				// System.out.println("tên class day:" + parentClass);
 
 				// compare the class name of current DE element is like 'thead'
@@ -293,22 +293,22 @@ public class KyotokimonoRentalTest {
 					continue;// if it is that continue with i++;
 				}
 				// if not, get a DE element
-				DateString = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indr_date + "]/td[" + indc_date
+				DateString = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]/td[" + indcDate
 						+ "]/div/div";
 
-				DE = findXpath(DateString);
+				dateElement = findXpath(DateString);
 
-				DateText = DE.getText();
+				DateText = dateElement.getText();
 
 				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
-					DE.click();
+					dateElement.click();
 					if (assertDate())
 						continue;
 					else {
-						indc_first_selected_date = j;
-						indr_first_selected_date = i;
+						indcFirstSelectedDate = j;
+						indrFirstSelectedDate = i;
 						return true;
 					}
 				}
@@ -423,14 +423,14 @@ public class KyotokimonoRentalTest {
 
 	}
 
-	public int getPrice_TableOption(String pricetext) throws InterruptedException {
+	public int getPriceTableOption(String pricetext) throws InterruptedException {
 
 		WebElement a = findXpath(pricetext);
 		int pr = Integer.parseInt(a.getAttribute("data-value"));
 		return pr;
 	}
 
-	public int get_Total_Price_TableOption(String s, int beg, int end) throws InterruptedException {
+	public int getTotalPriceTableOption(String s, int beg, int end) throws InterruptedException {
 		String b, linkOp, item1, item2;
 		int sum = 0, j;
 
@@ -439,13 +439,13 @@ public class KyotokimonoRentalTest {
 			b = Integer.toString(j);
 			linkOp = s + b + "]/input";
 
-			if (verify_Checked(linkOp)) {
-				sum = sum + getPrice_TableOption(linkOp);
+			if (verifyChecked(linkOp)) {
+				sum = sum + getPriceTableOption(linkOp);
 				// add item checked in list option
 				item1 = findXpath(s + b + "]/label").getText();
-				item2 = " ￥" + get_Attribute_Element(s + b + "]/input", "data-value");
+				item2 = " ￥" + getAttributeElement(s + b + "]/input", "data-value");
 				item1 = item1 + item2;
-				OptionBookingList.add(item1);
+				optionBookingList.add(item1);
 
 			}
 		}
@@ -453,22 +453,22 @@ public class KyotokimonoRentalTest {
 
 	}
 
-	public Boolean check_Price_OptionTable_person(int Locationperson) throws InterruptedException {
+	public Boolean checkPriceOptionTableperson(int Locationperson) throws InterruptedException {
 		String a;
 		int sum = 0, SumTotal;
 		a = Integer.toString(Locationperson);
 
 		sum = sum
-				+ get_Total_Price_TableOption(
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_1_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[3]/ul/li[", 3, 5)
-				+ get_Total_Price_TableOption(
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_1_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[5]/ul/li[", 3, 5)
-				+ get_Total_Price_TableOption(
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_1_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/ul[1]/li[", 2, 3)
-				+ get_Total_Price_TableOption(
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_1_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/ul[2]/li[", 2, 10);
 
-		SumTotal = getPrice_TableOption(
+		SumTotal = getPriceTableOption(
 				".//*[@id='plans_1_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/div/span");
 
 		if (sum == SumTotal) {
@@ -480,9 +480,9 @@ public class KyotokimonoRentalTest {
 
 	}
 
-	public Boolean check_Price_OptionTable(int numberperson) throws InterruptedException {
+	public Boolean checkPriceOptionTable(int numberperson) throws InterruptedException {
 		for (int i = 0; i < numberperson; i++) {
-			if (!check_Price_OptionTable_person(i)) {
+			if (!checkPriceOptionTableperson(i)) {
 				return false;
 			}
 
@@ -516,7 +516,7 @@ public class KyotokimonoRentalTest {
 					// amount in detail page
 				}
 				item += " " + "￥" + Integer.toString(sum_1_choose);
-				OptionBookingList.add(item);
+				optionBookingList.add(item);
 			}
 			sum += sum_1_choose;
 		}
@@ -534,7 +534,7 @@ public class KyotokimonoRentalTest {
 				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div/table/tbody/tr/td[5]/ul/li[", 2, 4)
 				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div/table/tbody/tr/td[7]/ul/li[", 2, 6);
 
-		sum = Integer.parseInt(get_Attribute_Element(".//*[@id='book_option_cost']", "data-value"));
+		sum = Integer.parseInt(getAttributeElement(".//*[@id='book_option_cost']", "data-value"));
 		if (sum == sum_photo) {
 			return true;
 		} else {
@@ -590,12 +590,12 @@ public class KyotokimonoRentalTest {
 		WebElement ele;
 
 		// get the last select date of table
-		for (j = indc_first_selected_date; j <= 7; j++) {
-			for (i = indr_first_selected_date; i <= row; i++) {
+		for (j = indcFirstSelectedDate; j <= 7; j++) {
+			for (i = indrFirstSelectedDate; i <= row; i++) {
 				a = Integer.toString(i);
 				b = Integer.toString(j);
 
-				parentClass = get_Attribute_Element(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + a + "]",
+				parentClass = getAttributeElement(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + a + "]",
 						"class");
 
 				// compare the class name of current DE element is like 'thead'
@@ -608,8 +608,8 @@ public class KyotokimonoRentalTest {
 				attclass = ele.getAttribute("class");
 				if ("hour selected".equals(attclass)) {
 					count_cell++;
-					indr_last_seleted_date = i;
-					indc_last_seleted_date = j;
+					indrLastSeletedDate = i;
+					indcLastSeletedDate = j;
 				}
 
 			}
@@ -623,8 +623,8 @@ public class KyotokimonoRentalTest {
 		if (!trclass.contains("even-early")) {
 			return 0;
 		}
-		xpath_cell = xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]/div/div/span[2]";
-		String feecellclass = get_Attribute_Element(xpath_cell, "class");
+		xpath_cell = xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]/div/div/span[2]";
+		String feecellclass = getAttributeElement(xpath_cell, "class");
 
 		if ("discount".equals(feecellclass)) {
 
@@ -644,22 +644,22 @@ public class KyotokimonoRentalTest {
 		String get_title_var, date_var, time_first_date, time_last_date;
 		String hour_last_time, min_last_time;
 
-		date_var = get_Attribute_Element(
-				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_first_selected_date)
-						+ "]/td[" + Integer.toString(indc_first_selected_date) + "]/div",
+		date_var = getAttributeElement(
+				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indrFirstSelectedDate)
+						+ "]/td[" + Integer.toString(indcFirstSelectedDate) + "]/div",
 				"data-time_date");
 		date_var = convertDateDetailString(date_var);// convert
 														// 2016-06-09->2016-6-9
 		date_var = date_var.substring(5);// get 6-9
 		date_var = date_var.replace("-", "/");
 
-		time_first_date = get_Attribute_Element(
-				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_first_selected_date)
-						+ "]/td[" + Integer.toString(indc_first_selected_date) + "]/div",
+		time_first_date = getAttributeElement(
+				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indrFirstSelectedDate)
+						+ "]/td[" + Integer.toString(indcFirstSelectedDate) + "]/div",
 				"data-time_hour");
-		time_last_date = get_Attribute_Element(
-				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_last_seleted_date)
-						+ "]/td[" + Integer.toString(indc_last_seleted_date) + "]/div",
+		time_last_date = getAttributeElement(
+				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indrLastSeletedDate)
+						+ "]/td[" + Integer.toString(indcLastSeletedDate) + "]/div",
 				"data-time_hour");
 		// add 30s for last time get by date table
 		hour_last_time = time_last_date.substring(0, 2);
@@ -687,8 +687,8 @@ public class KyotokimonoRentalTest {
 		String xpath_selected, getted_message, hour_cell;
 		int price_cell;
 
-		xpath_selected = xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]/div";
-		hour_cell = get_Attribute_Element(xpath_selected, "data-time_hour");
+		xpath_selected = xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]/div";
+		hour_cell = getAttributeElement(xpath_selected, "data-time_hour");
 
 		if (pr > 0) {
 
@@ -697,7 +697,7 @@ public class KyotokimonoRentalTest {
 				return false;
 			getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
 			if (getted_message.equals(text_message)) {
-				num_ear_dis += num_cell;
+				numEarlyDiscount += num_cell;
 				return true;
 			}
 
@@ -710,7 +710,7 @@ public class KyotokimonoRentalTest {
 					return false;
 				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
 				if (getted_message.equals(text_message)) {
-					num_ear_dis += num_cell;
+					numEarlyDiscount += num_cell;
 					return true;
 
 				}
@@ -732,7 +732,7 @@ public class KyotokimonoRentalTest {
 		text_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[3]/ul/li" + "["
 				+ Integer.toString(li_message) + "]"))).getText();
 		pr = getPriceDate(xpath_cell);
-		ear_dis_fee += pr * num;// get early or discount fee to check total
+		earDiscountFee += pr * num;// get early or discount fee to check total
 								// price
 		if (pr != 0) {
 			text_price_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[3]/ul/li["
@@ -761,8 +761,8 @@ public class KyotokimonoRentalTest {
 
 		if (count_cell == 1) {
 			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr["
-					+ Integer.toString(indr_first_selected_date) + "]";
-			if (!getCheckMessageOneDateTable(xpath_cell, text_message, text_price_message, num_person, pr,
+					+ Integer.toString(indrFirstSelectedDate) + "]";
+			if (!getCheckMessageOneDateTable(xpath_cell, text_message, text_price_message, numPerson, pr,
 					li_message)) {
 				return false;
 			}
@@ -770,16 +770,16 @@ public class KyotokimonoRentalTest {
 
 		}
 
-		for (int i = indr_first_selected_date; i < indr_last_seleted_date; i++) {
+		for (int i = indrFirstSelectedDate; i < indrLastSeletedDate; i++) {
 
 			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(i) + "]";
-			if (get_Attribute_Element(xpath_cell, "class").equals("thead")) {
+			if (getAttributeElement(xpath_cell, "class").equals("thead")) {
 				continue;
 			}
-			if ("hour selected".equals(get_Attribute_Element(
-					xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]" + "/div", "class"))) {
+			if ("hour selected".equals(getAttributeElement(
+					xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]" + "/div", "class"))) {
 				num_cell = Integer.parseInt(
-						findXpath((xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]/div/div/span"))
+						findXpath((xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]/div/div/span"))
 								.getText());
 				num_lost = num_lost + num_cell;
 
@@ -792,8 +792,8 @@ public class KyotokimonoRentalTest {
 			}
 		}
 
-		num_lost = num_person - num_lost;
-		xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_last_seleted_date)
+		num_lost = numPerson - num_lost;
+		xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indrLastSeletedDate)
 				+ "]";
 		if (!getCheckMessageOneDateTable(xpath_cell, text_message, text_price_message, num_lost, pr, li_message)) {
 			System.out.println("Message date is wrong :" + text_message);
@@ -838,12 +838,12 @@ public class KyotokimonoRentalTest {
 
 		int sum_price = 0, sum_price_1_person = 0, price_after_tax, sum_price_after_tax;
 		String taxpr;
-		for (int i = 0; i < num_person; i++) {
+		for (int i = 0; i < numPerson; i++) {
 			// check total of 1 person
 			sum_price_1_person = Integer.parseInt(
 					driver.findElement(By.cssSelector("#plans_1_persons_" + Integer.toString(i) + " #option_cost"))
 							.getAttribute("data-value"))
-					+ price_dress;
+					+ priceDress;
 
 			if (sum_price_1_person != Integer.parseInt(
 					driver.findElement(By.cssSelector("#plans_1_persons_" + Integer.toString(i) + " #person_amount"))
@@ -857,9 +857,9 @@ public class KyotokimonoRentalTest {
 		}
 
 		// add with photo price
-		sum_price += Integer.parseInt(get_Attribute_Element(".//*[@id='book_option_cost']", "data-value"));
+		sum_price += Integer.parseInt(getAttributeElement(".//*[@id='book_option_cost']", "data-value"));
 		// add early fee or discount fee
-		sum_price += ear_dis_fee;
+		sum_price += earDiscountFee;
 
 		// compare total price
 		if (sum_price != Integer.parseInt(findCss("#total_cost").getAttribute("data-value"))) {
@@ -883,7 +883,7 @@ public class KyotokimonoRentalTest {
 
 	public int checkTotalPricePayWebBooking() throws InterruptedException {
 		// check price pay web
-		int totalpriceweb = totalprice - price_dress * num_person + price_dress_web * num_person;
+		int totalpriceweb = totalPrice - priceDress * numPerson + priceDressWeb * numPerson;
 		Assert.assertEquals("[FAIL]:check total price pay web booking", Boolean.TRUE,
 				totalpriceweb == (Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value"))));
 		// check price tax pay web
@@ -909,7 +909,7 @@ public class KyotokimonoRentalTest {
 		for (int i = 1; i <= r; i++) {
 			info = findXpath(s + "[" + Integer.toString(i) + "]/label").getText() + " "
 					+ findXpath(s + "[" + Integer.toString(i) + "]/span").getText().replace(",", "");
-			OptionDetailList.add(info);
+			optionDetailList.add(info);
 		}
 		return true;
 	}
@@ -926,14 +926,14 @@ public class KyotokimonoRentalTest {
 			info = findXpath(s + "[" + Integer.toString(i) + "]/label").getText() + " "
 					+ findXpath(s + "[" + Integer.toString(i) + "]/span").getText().replace(",", "");
 
-			OptionDetailList.add(info);
+			optionDetailList.add(info);
 		}
 		return true;
 	}
 
-	public void getOptionDetailList() throws InterruptedException {
+	public void getoptionDetailList() throws InterruptedException {
 		// get option
-		for (int i = 0; i < num_person; i++) {
+		for (int i = 0; i < numPerson; i++) {
 			getRowOptionDetailOnePerson(i);
 		}
 
@@ -941,9 +941,9 @@ public class KyotokimonoRentalTest {
 			getRowphotoDetailOneTable(i);
 		}
 
-		if (!(OptionBookingList.size() == OptionDetailList.size() && OptionBookingList.containsAll(OptionDetailList))) {
-			System.out.println(OptionBookingList);
-			System.out.println(OptionDetailList);
+		if (!(optionBookingList.size() == optionDetailList.size() && optionBookingList.containsAll(optionDetailList))) {
+			System.out.println(optionBookingList);
+			System.out.println(optionDetailList);
 			System.out.println("Detail of booking dress is wrong");
 		}
 
@@ -952,27 +952,27 @@ public class KyotokimonoRentalTest {
 	public void getInfoCustomer() throws InterruptedException {
 		// get they in booking page
 
-		name_customer = get_Attribute_Element(".//*[@id='Book_rep_name']", "value");
-		email_customer = get_Attribute_Element(".//*[@id='Book_rep_email']", "value");
-		phone_customer = get_Attribute_Element(".//*[@id='Book_rep_tel01']", "value");
-		address_customer = get_Attribute_Element(".//*[@id='Book_rep_addr01']", "value");
-		postercode_customer = get_Attribute_Element(".//*[@id='Book_rep_postal_code']", "value");
-		birth_customer = get_Attribute_Element(".//*[@id='select2-Book_birthday_year-container']", "title") + "/"
-				+ get_Attribute_Element(".//*[@id='select2-Book_birthday_month-container']", "title") + "/"
-				+ get_Attribute_Element(".//*[@id='select2-Book_birthday_day-container']", "title");
-		date_booking = "2016/"
+		nameCustomer = getAttributeElement(".//*[@id='Book_rep_name']", "value");
+		emailCustomer = getAttributeElement(".//*[@id='Book_rep_email']", "value");
+		phoneCustomer = getAttributeElement(".//*[@id='Book_rep_tel01']", "value");
+		addressCustomer = getAttributeElement(".//*[@id='Book_rep_addr01']", "value");
+		postercodeCustomer = getAttributeElement(".//*[@id='Book_rep_postal_code']", "value");
+		birthdayCustomer = getAttributeElement(".//*[@id='select2-Book_birthday_year-container']", "title") + "/"
+				+ getAttributeElement(".//*[@id='select2-Book_birthday_month-container']", "title") + "/"
+				+ getAttributeElement(".//*[@id='select2-Book_birthday_day-container']", "title");
+		dateBooking = "2016/"
 				+ findXpath(".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[1]").getText().trim();
-		shop_name = getSelectedShop();
-		if (ear_dis_fee != 0) {
-			fee_eardis_booking = findXpath(".//*[@id='span_early_fee']/span").getText().trim() + "("
-					+ Integer.toString(num_ear_dis) + "名様分" + ")";
+		shopName = getSelectedShop();
+		if (earDiscountFee != 0) {
+			feeEarlyDiscount = findXpath(".//*[@id='span_early_fee']/span").getText().trim() + "("
+					+ Integer.toString(numEarlyDiscount) + "名様分" + ")";
 
 		}
 
-		totalprice_booking = findXpath(".//*[@id='total_cost']").getText().trim();
-		totalprice_booking_payweb = findXpath(".//*[@id='total_cost_reduced']").getText().trim();
-		totalprice_booking_tax = findXpath(".//*[@id='total_cost_tax']").getText().trim();
-		totalprice_booking_tax_web = findXpath(".//*[@id='total_cost_reduced_tax']").getText().trim();
+		totalPriceBooking = findXpath(".//*[@id='total_cost']").getText().trim();
+		totalPriceBookingPayWeb = findXpath(".//*[@id='total_cost_reduced']").getText().trim();
+		totalPriceBookingTax = findXpath(".//*[@id='total_cost_tax']").getText().trim();
+		totalPriceBookingTaxWeb = findXpath(".//*[@id='total_cost_reduced_tax']").getText().trim();
 
 	}
 
@@ -1000,18 +1000,18 @@ public class KyotokimonoRentalTest {
 	// total price
 	public Boolean checkInfoCustomer() throws InterruptedException {
 
-		String date_detail, num_person_detail, shopname_detail, fee_detail = null, namecus_detail, emailcus_detail,
+		String date_detail, numPerson_detail, shopname_detail, fee_detail = null, namecus_detail, emailcus_detail,
 				phonecus_detail, addresscus_detail, postcode_detail, birthcus_detail;
 
 		date_detail = findXpath(".//*[@id='booking_confirm']/div[1]/p[1]/span").getText().trim();
 		// convert datebook 2016/06/09->2016/6/9
 		date_detail = convertDateDetailString(date_detail);
 
-		num_person_detail = findXpath(".//*[@id='booking_confirm']/div[1]/p[2]/span").getText().trim();
+		numPerson_detail = findXpath(".//*[@id='booking_confirm']/div[1]/p[2]/span").getText().trim();
 		shopname_detail = findXpath(".//*[@id='booking_confirm']/div[1]/p[3]/span").getText().trim();
 		// because if date is not in early fee time , it is not show in booking
 		// or detail page
-		if (ear_dis_fee != 0) {
+		if (earDiscountFee != 0) {
 			fee_detail = findXpath(".//*[@id='booking_confirm']/div[1]/p[4]/span").getText().trim();
 		}
 		namecus_detail = findXpath(".//*[@id='booking_confirm']/div[3]/ul/li[1]/div[2]").getText().trim();
@@ -1021,71 +1021,71 @@ public class KyotokimonoRentalTest {
 		addresscus_detail = findXpath(".//*[@id='booking_confirm']/div[3]/ul/li[6]/div[2]").getText().trim();
 		birthcus_detail = findXpath(".//*[@id='booking_confirm']/div[3]/ul/li[7]/div[2]").getText().trim();
 
-		totalprice_detail = findXpath(".//*[@id='total_cost']").getText().trim();
-		totalprice_detail_payweb = findXpath(".//*[@id='total_cost_reduced']").getText().trim();
-		totalprice_detail_tax = findXpath(".//*[@id='total_cost_tax']").getText().trim();
-		totalprice_detail_tax_web = findXpath(".//*[@id='total_cost_reduced_tax']").getText().trim();
+		totalPriceDetail = findXpath(".//*[@id='total_cost']").getText().trim();
+		totalPriceDetailPayWeb = findXpath(".//*[@id='total_cost_reduced']").getText().trim();
+		totalPriceDetailTax = findXpath(".//*[@id='total_cost_tax']").getText().trim();
+		totalPriceDetailTaxWeb = findXpath(".//*[@id='total_cost_reduced_tax']").getText().trim();
 
-		if (!date_booking.equals(date_detail)) {
+		if (!dateBooking.equals(date_detail)) {
 			return false;
 		}
-		String num = Integer.toString(num_person) + " 名様";
-		if (!num.equals(num_person_detail)) {
-			System.out.println("number person of customer in detail page is wrong " + num_person_detail);
+		String num = Integer.toString(numPerson) + " 名様";
+		if (!num.equals(numPerson_detail)) {
+			System.out.println("number person of customer in detail page is wrong " + numPerson_detail);
 			return false;
 		}
-		if (!shop_name.equals(shopname_detail)) {
+		if (!shopName.equals(shopname_detail)) {
 			System.out.println("shop name customer in detail page is wrong " + shopname_detail);
-			System.out.println(shop_name);
+			System.out.println(shopName);
 			return false;
 
 		}
-		if (ear_dis_fee != 0) {
-			if (!fee_eardis_booking.equals(fee_detail)) {
-				System.out.println("fee early discount customer in detail page  is wrong :" + fee_eardis_booking);
+		if (earDiscountFee != 0) {
+			if (!feeEarlyDiscount.equals(fee_detail)) {
+				System.out.println("fee early discount customer in detail page  is wrong :" + feeEarlyDiscount);
 				return false;
 			}
 		}
-		if (!name_customer.equals(namecus_detail)) {
+		if (!nameCustomer.equals(namecus_detail)) {
 			System.out.println("date detail customer in detail page  is wrong :" + namecus_detail);
 			return false;
 		}
-		if (!email_customer.equals(emailcus_detail)) {
+		if (!emailCustomer.equals(emailcus_detail)) {
 			System.out.println("email customer in detail page is wrong :" + emailcus_detail);
 			return false;
 		}
-		if (!phone_customer.equals(phonecus_detail)) {
+		if (!phoneCustomer.equals(phonecus_detail)) {
 			System.out.println("phone customer in detail page is wrong :" + phonecus_detail);
 			return false;
 		}
-		if (!postercode_customer.equals(postcode_detail)) {
+		if (!postercodeCustomer.equals(postcode_detail)) {
 			System.out.println("postcode  customer in detail page is wrong :" + postcode_detail);
 			return false;
 		}
-		if (!address_customer.equals(addresscus_detail)) {
+		if (!addressCustomer.equals(addresscus_detail)) {
 			System.out.println("address customer in detail page is wrong :" + addresscus_detail);
 			return false;
 		}
-		if (!birth_customer.equals(birthcus_detail)) {
+		if (!birthdayCustomer.equals(birthcus_detail)) {
 			System.out.println("birthday customer in detail page  is wrong :" + birthcus_detail);
 			return false;
 		}
 
-		if (!totalprice_booking.equals(totalprice_detail)) {
-			System.out.println("total price customer in detail page  is wrong :" + totalprice_detail);
+		if (!totalPriceBooking.equals(totalPriceDetail)) {
+			System.out.println("total price customer in detail page  is wrong :" + totalPriceDetail);
 			return false;
 		}
-		if (!totalprice_booking_payweb.equals(totalprice_detail_payweb)) {
-			System.out.println("total price payment customer in detail page  is wrong :" + totalprice_detail_payweb);
+		if (!totalPriceBookingPayWeb.equals(totalPriceDetailPayWeb)) {
+			System.out.println("total price payment customer in detail page  is wrong :" + totalPriceDetailPayWeb);
 			return false;
 		}
-		if (!totalprice_booking_tax.equals(totalprice_detail_tax)) {
-			System.out.println("total price tax in detail page  is wrong :" + totalprice_detail_tax);
+		if (!totalPriceBookingTax.equals(totalPriceDetailTax)) {
+			System.out.println("total price tax in detail page  is wrong :" + totalPriceDetailTax);
 			return false;
 		}
-		if (!totalprice_booking_tax_web.equals(totalprice_detail_tax_web)) {
+		if (!totalPriceBookingTaxWeb.equals(totalPriceDetailTaxWeb)) {
 			System.out.println(
-					"total price tax pay for web of customer in detail page  is wrong :" + totalprice_detail_tax_web);
+					"total price tax pay for web of customer in detail page  is wrong :" + totalPriceDetailTaxWeb);
 			return false;
 		}
 

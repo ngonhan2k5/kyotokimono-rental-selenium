@@ -3,7 +3,11 @@ package com.examples.seleniumrc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import javax.swing.plaf.metal.MetalIconFactory.FileIcon16;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Alert;
@@ -12,17 +16,19 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.examples.seleniumrc.util.PropertyReader;
+import com.sun.jna.platform.win32.OaIdl.IDLDESC;
 
-public class checknameandpriceYukata {
+public class CheckNameAndPriceKimono {
 
 	WebDriver driver;
 	List listshopname = new ArrayList();
 	List listshopname_page2 = new ArrayList();
-	List listIdYukata = new ArrayList(
-			Arrays.asList("12", "13", "14", "15", "79", "16", "18", "17", "20", "21", "22", "23"));
-	//lost id 19 because it is in table with id 17
+	List listIdKimono = new ArrayList(
+			Arrays.asList("1", "2", "26", "3", "39", "35", "36", "4", "6", "7", "37", "8", "40"));
 
 	@Before
 	public void setUp() throws Exception {
@@ -42,23 +48,18 @@ public class checknameandpriceYukata {
 
 	@Test
 	public void checkBookingKimono() throws InterruptedException {
-		System.out.println("*************************checknameandpriceYukata***************************");
-		
-		String a, b;
 
-		for (int i = 1; i <= listIdYukata.size(); i++) {
-			//boy baby dress in table same girl baby
-	
-			a = Integer.toString(i);
-			b = (String) listIdYukata.get(i - 1);
+		System.out.println("*************************checknameandpriceYukata***************************");
+		for (int i = 1; i <= listIdKimono.size(); i++) {
+			String a = Integer.toString(i);
+			String b = (String) listIdKimono.get(i - 1);
 			if (!checkoneBookingKimono(
-					"#yukata-tab .list-kimono-item:nth-child(" + a + ") .reserve-list-kimono-content .name",
+					"#kimono-tab .list-kimono-item:nth-child(" + a + ") .reserve-list-kimono-content .name",
 					"#list_plans_" + b + "SelectBoxItArrowContainer",
 					"#list_plans_" + b + "SelectBoxItOptions li:nth-child(2) .number",
-					"#yukata-tab .list-kimono-item:nth-child(" + a + ") .price_small",
-					"#yukata-tab .list-kimono-item:nth-child(" + a + ") .price_large", a)) {
+					"#kimono-tab .list-kimono-item:nth-child(" + a + ") .price_small",
+					"#kimono-tab .list-kimono-item:nth-child(" + a + ") .price_large", a))
 				return;
-			}
 
 		}
 
@@ -70,27 +71,28 @@ public class checknameandpriceYukata {
 			String idpriceweb, String orderdress) throws InterruptedException {
 		String namedress, namedress_page2, price, price_page2, pricepayweb, pricepayweb_page2;
 
-		waitFindCSSElementLoaded(".yukata");
+		// click tab kimono
+		waitFindCSSElementLoaded(".kimono");
+		findCss(".kimono").click();
+		Thread.sleep(500);
+
 		namedress = findCss(idnamedress).getText().replace("♥", "").replace("\n", "");
 		price = getPriceKimono(idprice);
 		pricepayweb = getPriceKimono(idpriceweb);
 		getNameshop(orderdress);
 
 		// choose number and click next button
-
 		findCss(idselectbox).click();
 		Thread.sleep(200);
 		findCss(idnumperson).click();
 		Thread.sleep(200);
-		findCss("#yukata-tab .go-to-page").click();
+		findCss(".go-to-page").click();
 		waitForPageLoaded(driver.getCurrentUrl());
-		
+
 		getNameshoppage2();
 		Thread.sleep(500);
-		namedress_page2 = driver
-				.findElement(By
-						.xpath(".//*[@id='sec-booking-chooseplan']/div/table/tbody/tr/td[1]/div/table/tbody/tr[2]/td[2]"))
-				.getText();
+		namedress_page2 = findCss(".plan_name.kimono").getText();
+
 		if (!listshopname.containsAll(listshopname_page2) || !(listshopname.size() == listshopname_page2.size())) {
 			System.out.println("[FAIL:shop names" + orderdress + " are NOT match]");
 			System.out.println(listshopname);
@@ -99,13 +101,8 @@ public class checknameandpriceYukata {
 		}
 		listshopname.clear();
 		listshopname_page2.clear();
-		if("#list_plans_23SelectBoxItArrowContainer".equals(idselectbox))
-		{
-			;// name dress of select box's id is 23 ,is sort than name dress in page 2->pass
-		}
-		else if (!namedress.equals(namedress_page2)) {
-			
-			System.out.println("[FAIL]-names of kimono "+idnamedress+" are NOT match");
+		if (!namedress.equals(namedress_page2)) {
+			System.out.println("[FAIL]-names of kimono are NOT match");
 			System.out.println(namedress);
 			System.out.println(namedress_page2);
 			return false;
@@ -113,7 +110,7 @@ public class checknameandpriceYukata {
 
 		price_page2 = findCss("#total_cost").getAttribute("data-value");
 		if (!price.equals(price_page2)) {
-			System.out.println("[FAIL]-price of kimono "+idnamedress+" are NOT match");
+			System.out.println("[FAIL]-price of kimono are NOT match");
 			System.out.println(price);
 			System.out.println(price_page2);
 			return false;
@@ -121,7 +118,7 @@ public class checknameandpriceYukata {
 
 		pricepayweb_page2 = findCss("#total_cost_reduced").getAttribute("data-value");
 		if (!pricepayweb.equals(pricepayweb_page2)) {
-			System.out.println("[FAIL]-price pay web of kimono "+idnamedress+" are NOT match");
+			System.out.println("[FAIL]-price pay web of kimono are NOT match");
 			System.out.println(pricepayweb);
 			System.out.println(pricepayweb_page2);
 			return false;
@@ -131,12 +128,11 @@ public class checknameandpriceYukata {
 		return true;
 
 	}
-	
+
 	public void waitForPageLoaded(String previousurl) throws InterruptedException {
-		String currenturl=driver.getCurrentUrl();
-		while(previousurl.equals(currenturl))
-		{
-			currenturl=driver.getCurrentUrl();
+		String currenturl = driver.getCurrentUrl();
+		while (previousurl.equals(currenturl)) {
+			currenturl = driver.getCurrentUrl();
 			Thread.sleep(100);
 		}
 
@@ -148,7 +144,7 @@ public class checknameandpriceYukata {
 			Thread.sleep(100);
 		}
 	}
-
+	
 	public void getNameshoppage2() throws InterruptedException {
 		List<WebElement> AreaElements = driver.findElements(By.cssSelector("#choose-shop li"));
 		for (WebElement element : AreaElements) {
@@ -161,7 +157,7 @@ public class checknameandpriceYukata {
 	public void getNameshop(String orderdress) throws InterruptedException {
 		String nameshop = "";
 		List<WebElement> AreaElements = driver.findElements(
-				By.cssSelector("#yukata-tab .list-kimono-item:nth-child(" + orderdress + ") .group-icon"));
+				By.cssSelector("#kimono-tab .list-kimono-item:nth-child(" + orderdress + ") .group-icon"));
 		for (WebElement element : AreaElements) {
 			String liClass = element.getAttribute("class");
 			if (!liClass.contains("disable")) {
