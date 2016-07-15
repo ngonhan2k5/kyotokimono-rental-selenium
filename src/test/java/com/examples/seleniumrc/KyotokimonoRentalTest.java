@@ -136,29 +136,7 @@ public class KyotokimonoRentalTest {
 
 	}
 
-	public void setupEmuatorDevice() throws InterruptedException {
-		// here creating our first map for deviceName
-		Map<String, String> mobileEmulation = new HashMap<String, String>();
-		mobileEmulation.put("deviceName", "Apple iPhone 5");
-
-		// here creating the second map with key mobileEmulation
-		Map<String, Object> chromeOptions = new HashMap<String, Object>();
-		chromeOptions.put("mobileEmulation", mobileEmulation);
-
-		// setting DesiredCapabilities for chrome
-		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-		capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
-
-		String driverUrl = PropertyReader.getValue("chromedriver");
-		System.setProperty("webdriver.chrome.driver", driverUrl);
-		driver = new ChromeDriver(capabilities);
-		driver.manage().window().maximize();
-
-		// opting mobile website...
-		driver.get("https://kyotokimono-rental.com/reserve");
-		// TimeLoadPage("https://kyotokimono-rental.com/reserve");
-		waitForPageLoaded();
-	}
+	
 
 	public void waitForPageLoaded() {
 		ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
@@ -419,7 +397,7 @@ public class KyotokimonoRentalTest {
 
 		clickButtonXpath(".//*[@id='book_options[60]SelectBoxItOptions']/li[6]/a");
 
-		// Thread.sleep(200);
+
 
 	}
 

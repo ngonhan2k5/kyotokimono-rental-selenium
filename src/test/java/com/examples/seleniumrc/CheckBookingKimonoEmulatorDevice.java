@@ -43,7 +43,11 @@ public class CheckBookingKimonoEmulatorDevice {
 	@Before
 	public void setUp() throws Exception {
 
-		setupEmuatorDevice("Apple iPhone 6");
+		setupEmuatorDevice("Apple iPhone 4");
+//		setupEmuatorDevice("Apple iPhone 5");
+//		setupEmuatorDevice("Apple iPhone 6");
+//		setupEmuatorDevice("Apple iPhone 6 Plus");
+	
 
 	}
 
@@ -492,13 +496,13 @@ public class CheckBookingKimonoEmulatorDevice {
 
 		sum = sum
 				+ getTotalPriceTableOption(
-						"#plans_1_persons_" + Integer.toString(Locationperson) + " ul:nth-child(1) li:nth-child(", 3, 5)
+						"#plans_1_persons_" +a+ " ul:nth-child(1) li:nth-child(", 3, 5)
 				+ getTotalPriceTableOption(
-						"#plans_1_persons_" + Integer.toString(Locationperson) + " ul:nth-child(2) li:nth-child(", 2, 4)
+						"#plans_1_persons_" + a + " ul:nth-child(2) li:nth-child(", 2, 4)
 				+ getTotalPriceTableOption(
-						"#plans_1_persons_" + Integer.toString(Locationperson) + " ul:nth-child(3) li:nth-child(", 2, 3)
+						"#plans_1_persons_" +a + " ul:nth-child(3) li:nth-child(", 2, 3)
 				+ getTotalPriceTableOption(
-						"#plans_1_persons_" + Integer.toString(Locationperson) + " ul:nth-child(4) li:nth-child(", 2,
+						"#plans_1_persons_" +a + " ul:nth-child(4) li:nth-child(", 2,
 						10);
 
 		SumTotal = getPriceTableOption("#plans_1_persons_" + a + " #option_cost");
