@@ -43,7 +43,7 @@ public class CheckBookingKimonoEmulatorDevice {
 	@Before
 	public void setUp() throws Exception {
 
-		setupEmuatorDevice("Apple iPhone 5");
+		setupEmuatorDevice("Apple iPhone 6");
 
 	}
 
@@ -914,7 +914,6 @@ public class CheckBookingKimonoEmulatorDevice {
 	public int checkTotalPricePayWebBooking() throws InterruptedException {
 		// check price pay web
 		int totalpriceweb = totalprice - priceDress * numPerson + priceDressWeb * numPerson;
-		System.out.println(totalprice + "," + priceDress + "," + numPerson + "," + priceDressWeb);
 		System.out.println("Total of price by pay web = " + totalpriceweb);
 
 		Assert.assertEquals("[FAIL]:check total price pay web booking", Boolean.TRUE,
@@ -1059,69 +1058,57 @@ public class CheckBookingKimonoEmulatorDevice {
 		totalprice_detail_tax = findXpath(".//*[@id='total_cost_tax']").getText().trim();
 		totalprice_detail_tax_web = findXpath(".//*[@id='total_cost_reduced_tax']").getText().trim();
 
-		if (!dateBooking.equals(date_detail)) {
-			return false;
-		}
+		Assert.assertEquals("[FAIL:check date booking on detail page", Boolean.TRUE,
+				dateBooking.equals(date_detail));
 		String num = Integer.toString(numPerson) + " 名様";
-		if (!num.equals(numPerson_detail)) {
-			System.out.println("number person of customer in detail page is wrong " + numPerson_detail);
-			return false;
-		}
-		if (!shopName.equals(shopname_detail)) {
-			System.out.println("shop name customer in detail page is wrong " + shopname_detail);
-			System.out.println(shopName);
-			return false;
-
-		}
+		
+		Assert.assertEquals("[FAIL:check number of customer in detail page", Boolean.TRUE,
+				num.equals(numPerson_detail));
+	
+		Assert.assertEquals("[FAIL:check shop name in detail page", Boolean.TRUE,
+				shopName.equals(shopname_detail));
 		if (earlyDiscountFee != 0) {
-			if (!feeEarlyDiscount.equals(fee_detail)) {
-				System.out.println("fee early discount customer in detail page  is wrong :" + feeEarlyDiscount);
-				return false;
-			}
+		
+			Assert.assertEquals("[FAIL:check fee early or discount  in detail page", Boolean.TRUE,
+					feeEarlyDiscount.equals(fee_detail));
 		}
-		if (!nameCustomer.equals(namecus_detail)) {
-			System.out.println("name customer in detail page  is wrong :" + namecus_detail);
-			System.out.println("name customer in detail page  is wrong :" + nameCustomer);
-			return false;
-		}
-		if (!emailCustomer.equals(emailcus_detail)) {
-			System.out.println("email customer in detail page is wrong :" + emailcus_detail);
-			return false;
-		}
-		if (!phoneCustomer.equals(phonecus_detail)) {
-			System.out.println("phone customer in detail page is wrong :" + phonecus_detail);
-			return false;
-		}
-		if (!postercodeCustomer.equals(postcode_detail)) {
-			System.out.println("postcode  customer in detail page is wrong :" + postcode_detail);
-			return false;
-		}
+				
+		
+		Assert.assertEquals("[FAIL:check name of customer  in detail page", Boolean.TRUE,
+				nameCustomer.equals(namecus_detail));
+	
+		Assert.assertEquals("[FAIL:check email customer  in detail page", Boolean.TRUE,
+				emailCustomer.equals(emailcus_detail));
+		
+		Assert.assertEquals("[FAIL:check phone number of customer  in detail page", Boolean.TRUE,
+				phoneCustomer.equals(phonecus_detail));
+		
+		Assert.assertEquals("[FAIL:checkpostcode of customer  in detail page", Boolean.TRUE,
+				postercodeCustomer.equals(postcode_detail));
 		if (!addressCustomer.equals(addresscus_detail)) {
 			System.out.println("address customer in detail page is wrong :" + addresscus_detail);
 			return false;
 		}
+		Assert.assertEquals("[FAIL:checkpostcode of customer  in detail page", Boolean.TRUE,
+				postercodeCustomer.equals(postcode_detail));
 		if (!birthCustomer.equals(birthcus_detail)) {
 			System.out.println("birthday customer in detail page  is wrong :" + birthcus_detail);
 			return false;
 		}
+		Assert.assertEquals("[FAIL:checkpostcode of customer  in detail page", Boolean.TRUE,
+				postercodeCustomer.equals(postcode_detail));
 
-		if (!totalPriceBooking.equals(totalprice_detail)) {
-			System.out.println("total price customer in detail page  is wrong :" + totalprice_detail);
-			return false;
-		}
-		if (!totalPriceBooking_payweb.equals(totalprice_detail_payweb)) {
-			System.out.println("total price payment customer in detail page  is wrong :" + totalprice_detail_payweb);
-			return false;
-		}
-		if (!totalPriceBooking_tax.equals(totalprice_detail_tax)) {
-			System.out.println("total price tax in detail page  is wrong :" + totalprice_detail_tax);
-			return false;
-		}
-		if (!totalPriceBooking_tax_web.equals(totalprice_detail_tax_web)) {
-			System.out.println(
-					"total price tax pay for web of customer in detail page  is wrong :" + totalprice_detail_tax_web);
-			return false;
-		}
+		Assert.assertEquals("[FAIL:check total price  in detail page", Boolean.TRUE,
+				totalPriceBooking.equals(totalprice_detail));
+		
+		Assert.assertEquals("[FAIL:check total price payment   in detail page", Boolean.TRUE,
+				totalPriceBooking_payweb.equals(totalprice_detail_payweb));
+		
+		Assert.assertEquals("[FAIL:check total price tax  in detail page", Boolean.TRUE,
+				totalPriceBooking_tax.equals(totalprice_detail_tax));
+		
+		Assert.assertEquals("[FAIL:checktotal price tax pay for web  in detail page", Boolean.TRUE,
+				totalPriceBooking_tax_web.equals(totalprice_detail_tax_web));
 
 		return true;
 
