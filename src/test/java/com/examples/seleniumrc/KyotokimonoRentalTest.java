@@ -67,10 +67,10 @@ public class KyotokimonoRentalTest {
 		// shopName = "kyoto";
 		// shopName = "gionshijo";
 		// shopName = "osaka";
-		shopName = "tokyo";
+		//shopName = "tokyo";
 
 		// shopName = "kamakura";
-		// shopName = "kinkakuji";
+		 shopName = "kinkakuji";
 		// shopName = "shinkyogoku";
 		// shopName = "kiyomizuzaka";
 
@@ -613,7 +613,7 @@ public class KyotokimonoRentalTest {
 
 			return -300;
 		} else {
-			if ("new even-early".equals(feecellclass)) {
+			if ("early".equals(feecellclass)) {
 
 				return 500;
 			}
@@ -689,6 +689,7 @@ public class KyotokimonoRentalTest {
 				if (!checkMessageDiscountPriceDate(price_cell, text_price_message))
 					return false;
 				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
+				System.out.println(getted_message);
 				if (getted_message.equals(text_message)) {
 					numEarlyDiscount += num_cell;
 					return true;
@@ -697,6 +698,7 @@ public class KyotokimonoRentalTest {
 
 			} else {
 				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します";
+				System.out.println(getted_message);
 				if (getted_message.equals(text_message)) {
 					return true;
 
@@ -717,10 +719,11 @@ public class KyotokimonoRentalTest {
 		if (pr != 0) {
 			text_price_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[3]/ul/li["
 					+ Integer.toString(li_message) + "]/span"))).getText();
+			
 		} else {
 			text_price_message = "";
 		}
-
+		
 		if (!checkOneMessageDateTable(xpath_cell, text_message, text_price_message, num, pr)) {
 			System.out.println("Message date " + li_message + " is wrong");
 			return false;

@@ -43,9 +43,9 @@ public class CheckBookingKimonoEmulatorDevice {
 	@Before
 	public void setUp() throws Exception {
 
-		setupEmuatorDevice("Apple iPhone 4");
-//		setupEmuatorDevice("Apple iPhone 5");
-//		setupEmuatorDevice("Apple iPhone 6");
+//		setupEmuatorDevice("Apple iPhone 4");
+	//	setupEmuatorDevice("Apple iPhone 5");
+		setupEmuatorDevice("Apple iPhone 6");
 //		setupEmuatorDevice("Apple iPhone 6 Plus");
 	
 
@@ -61,12 +61,12 @@ public class CheckBookingKimonoEmulatorDevice {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		numPerson = 2;
+		numPerson = 19;
 
-		// nameShop = "kyoto";
+		 nameShop = "kyoto";
 		// nameShop = "gionshijo";
 		// nameShop = "osaka";
-		nameShop = "tokyo";
+		//nameShop = "tokyo";
 
 		// nameShop = "kamakura";
 		// nameShop = "kinkakuji";
@@ -429,33 +429,43 @@ public class CheckBookingKimonoEmulatorDevice {
 			Thread.sleep(200);
 
 		}
-
-		// choose photo table 1
-		scrollAndClickCSS("[for='checkbox-control-all']", 0);
-		Select dropdownbox58 = new Select(driver.findElement(By.cssSelector("[name='book_options[58]']")));
-		dropdownbox58.selectByIndex(1);
+//
+//		// choose photo table 1
+	scrollAndClickCSS("[for='checkbox-control-all']", 0);
+//		Select dropdownbox58 = new Select(driver.findElement(By.cssSelector("[name='book_options[58]']")));
+//		dropdownbox58.selectByIndex(1);
 		Thread.sleep(200);
 		// choose photo table 2
-		scrollAndClickCSS("[for='checkbox-control-group-15']", 0);
-		Select dropdownbox62 = new Select(driver.findElement(By.cssSelector("[name='book_options[62]']")));
-		dropdownbox62.selectByIndex(2);
-		Select dropdownbox63 = new Select(driver.findElement(By.cssSelector("[name='book_options[63]']")));
-		dropdownbox63.selectByIndex(3);
-		Select dropdownbox64 = new Select(driver.findElement(By.cssSelector("[name='book_options[64]']")));
-		dropdownbox64.selectByIndex(6);
-		Thread.sleep(200);
-		// choosephoto table 3
-		scrollAndClickCSS("[for='checkbox-control-group-16']", 0);
-		Select dropdownbox65 = new Select(driver.findElement(By.cssSelector("[name='book_options[65]']")));
-		dropdownbox65.selectByIndex(8);
-		Select dropdownbox66 = new Select(driver.findElement(By.cssSelector("[name='book_options[66]']")));
-		dropdownbox66.selectByIndex(8);
-		Select dropdownbox67 = new Select(driver.findElement(By.cssSelector("[name='book_options[67]']")));
-		dropdownbox67.selectByIndex(8);
-		Select dropdownbox68 = new Select(driver.findElement(By.cssSelector("[name='book_options[68]']")));
-		dropdownbox68.selectByIndex(8);
-		Select dropdownbox69 = new Select(driver.findElement(By.cssSelector("[name='book_options[69]']")));
-		dropdownbox69.selectByIndex(8);
+		
+		Select dropdownbox59 = new Select(driver.findElement(By.cssSelector("[name='book_options[59]']")));
+		dropdownbox59.selectByIndex(2);
+	
+		Select dropdownbox60 = new Select(driver.findElement(By.cssSelector("[name='book_options[60]']")));
+		dropdownbox60.selectByIndex(2);
+	
+//		Select dropdownbox61 = new Select(driver.findElement(By.cssSelector("[name='book_options[61]']")));
+//		dropdownbox61.selectByIndex(2);
+		//choose photo table 3
+		//scrollAndClickCSS("[for='checkbox-control-group-15']", 0);
+//		Select dropdownbox62 = new Select(driver.findElement(By.cssSelector("[name='book_options[62]']")));
+//		dropdownbox62.selectByIndex(2);
+//		Select dropdownbox63 = new Select(driver.findElement(By.cssSelector("[name='book_options[63]']")));
+//		dropdownbox63.selectByIndex(3);
+//		Select dropdownbox64 = new Select(driver.findElement(By.cssSelector("[name='book_options[64]']")));
+//		dropdownbox64.selectByIndex(6);
+//		Thread.sleep(200);
+//		// choosephoto table 4
+//		scrollAndClickCSS("[for='checkbox-control-group-16']", 0);
+//		Select dropdownbox65 = new Select(driver.findElement(By.cssSelector("[name='book_options[65]']")));
+//		dropdownbox65.selectByIndex(8);
+//		Select dropdownbox66 = new Select(driver.findElement(By.cssSelector("[name='book_options[66]']")));
+//		dropdownbox66.selectByIndex(8);
+//		Select dropdownbox67 = new Select(driver.findElement(By.cssSelector("[name='book_options[67]']")));
+//		dropdownbox67.selectByIndex(8);
+//		Select dropdownbox68 = new Select(driver.findElement(By.cssSelector("[name='book_options[68]']")));
+//		dropdownbox68.selectByIndex(8);
+//		Select dropdownbox69 = new Select(driver.findElement(By.cssSelector("[name='book_options[69]']")));
+//		dropdownbox69.selectByIndex(8);
 
 	}
 
@@ -1075,8 +1085,7 @@ public class CheckBookingKimonoEmulatorDevice {
 		
 			Assert.assertEquals("[FAIL:check fee early or discount  in detail page", Boolean.TRUE,
 					feeEarlyDiscount.equals(fee_detail));
-		}
-				
+		}		
 		
 		Assert.assertEquals("[FAIL:check name of customer  in detail page", Boolean.TRUE,
 				nameCustomer.equals(namecus_detail));
@@ -1089,16 +1098,16 @@ public class CheckBookingKimonoEmulatorDevice {
 		
 		Assert.assertEquals("[FAIL:checkpostcode of customer  in detail page", Boolean.TRUE,
 				postercodeCustomer.equals(postcode_detail));
-		if (!addressCustomer.equals(addresscus_detail)) {
-			System.out.println("address customer in detail page is wrong :" + addresscus_detail);
-			return false;
-		}
+		
+		Assert.assertEquals("[FAIL:address of customer  in detail page", Boolean.TRUE,
+				addressCustomer.equals(addresscus_detail));
+		
 		Assert.assertEquals("[FAIL:checkpostcode of customer  in detail page", Boolean.TRUE,
 				postercodeCustomer.equals(postcode_detail));
-		if (!birthCustomer.equals(birthcus_detail)) {
-			System.out.println("birthday customer in detail page  is wrong :" + birthcus_detail);
-			return false;
-		}
+	
+		Assert.assertEquals("[FAIL:birthday of customer  in detail page", Boolean.TRUE,
+				birthCustomer.equals(birthcus_detail));
+
 		Assert.assertEquals("[FAIL:checkpostcode of customer  in detail page", Boolean.TRUE,
 				postercodeCustomer.equals(postcode_detail));
 
