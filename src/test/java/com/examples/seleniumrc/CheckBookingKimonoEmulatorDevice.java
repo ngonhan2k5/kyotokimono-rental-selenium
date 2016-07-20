@@ -57,7 +57,7 @@ public class CheckBookingKimonoEmulatorDevice {
 	// }
 
 	@Test
-	public void checkBookingKimonoStandard() throws InterruptedException {
+	public void main() throws InterruptedException {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 

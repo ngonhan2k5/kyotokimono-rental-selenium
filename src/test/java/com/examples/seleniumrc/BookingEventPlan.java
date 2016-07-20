@@ -9,10 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import com.examples.seleniumrc.util.PropertyReader;
 import com.thoughtworks.selenium.webdriven.commands.GetAttribute;
@@ -22,9 +24,7 @@ public class BookingEventPlan {
 	WebDriver driver;
 	int num_person;
 	WebElement DE;
-	String name_shop;
-	String xpath_Date_Element, indr_date, indc_date;
-	int indr_first_selected_date, indr_last_seleted_date, indc_first_selected_date, indc_last_seleted_date;
+	String shopname;
 	String name_customer, email_customer, phone_customer, address_customer, birth_customer, date_booking, shop_name,
 			postercode_customer, fee_eardis_booking;
 	int price_dress, price_dress_web, num_ear_dis = 0;
@@ -34,11 +34,12 @@ public class BookingEventPlan {
 	String totalprice_booking, totalprice_detail, totalprice_booking_payweb, totalprice_detail_payweb,
 			totalprice_booking_tax, totalprice_detail_tax, totalprice_booking_tax_web, totalprice_detail_tax_web;
 	int totalprice;
-	
+	int indcFirstSelectedDate, indrFirstSelectedDate;
 	//
 	String iddress;
-	int pricedress;
-	int sum=0;
+	int normalpricedress, salepricedress;
+	int sum = 0;
+	String titleMessageDateAllPage,MessageDateAllPage;
 
 	@Before
 	public void setUp() throws Exception {
@@ -75,42 +76,109 @@ public class BookingEventPlan {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		// click event tab homogi
-		waitFindCSSElementLoaded("[data-page='homongi']");
-		findCss("[data-page='homongi']").click();
-		Thread.sleep(500);
+		// click event plan
+		clickButtonCss("[href='#travel-tab']");
 
-		//choose shop and dress
-		chooseShopAndDress();
-		
-		//choose date
+		//// click event tab homogi
+		clickButtonCss("[data-title='訪問着一覧']");
+		Thread.sleep(4000);
+
+		// choose shop and dress
+		chooseShopAndDress("kyoto", 1);
+		Thread.sleep(2000);
+		// choose date
 		chooseRanDomDate();
-		
-		//click next button
+		// check message date
+		checkMessageDateTable();
+		// check shop name
+		checkShopNameProductPage();
+		// check price
+		checkpricedress();
+
+		// //click next button
 		clickButtonCss(".btn");
 		
-		
-		
+		//check information in cart page
+		checkcartpage();
+
 		System.out
 				.println("***************************************end test********************************************");
 
 	}
-	
-	public void  chooseShopAndDress() throws InterruptedException {
-		//choose shop
-		clickButtonXpath(".//*[@id='shop_id']");
-		clickButtonXpath(".//*[@id='shop_id']/option[1]");
-//		clickButtonXpath(".//*[@id='shop_id']/option[2]");
-//		clickButtonXpath(".//*[@id='shop_id']/option[3]");
-//		clickButtonXpath(".//*[@id='shop_id']/option[4]");
-//		clickButtonXpath(".//*[@id='shop_id']/option[5]");
+
+	public void	checkcartpage() throws InterruptedException {
+		//check shop name 
+		String getshopname=findCss(".shop-name").getText().trim();
+		Assert.assertEquals("Fail-check shop name in cart page",Boolean.TRUE,getshopname.equals(shopname));
 		
-		//click search
-		clickButtonXpath(".//*[@id='ajax_form']/div[1]/div/div[3]/div[2]/input[2]");
-		//click dress
-		clickButtonCss(iddress);
-		//get price dress
-		price_dress=Integer.parseInt(findCss(".price-large").getText().replace(",","").replace("￥",""));
+		//check message date in cart page
+		String getTitleMessage=findCss("#allocate-info-time").getText();
+		Assert.assertEquals("Fail-check title message date in cart page",Boolean.TRUE,getTitleMessage.equals(titleMessageDateAllPage));
+		
+		String getMessageDate=findCss("#allocate-info-hour-list li").getText();
+		Assert.assertEquals("Fail-check message date in cart page",Boolean.TRUE,getMessageDate.equals(MessageDateAllPage));
+		//choose date again to check 
+		clickButtonCss("[data-collapse='#calendar']");
+		chooseRanDomDate();
+		clickButtonCss("[data-collapse='#calendar']");
+		
+		//check name and price all dress
+			
+		
+	}
+	public void checkpricedress() throws InterruptedException {
+		String getNomalPriceDress = findCss(".price-small").getText().replace("￥","").replace(",","").replace("(税抜)","").trim();
+		String getDiscountPriceDress = findCss(".price-sale").getText().replace("￥","").replace(",","").replace("(税抜)","").trim();
+		System.out.println(getNomalPriceDress);
+		System.out.println(normalpricedress);
+		Assert.assertEquals("Fail-check nomal price dress ", Boolean.TRUE, getNomalPriceDress.equals(Integer.toString(normalpricedress)));
+		Assert.assertEquals("Fail-check sale price dress ", Boolean.TRUE, getDiscountPriceDress.equals(Integer.toString(salepricedress)));
+
+	}
+
+	public void checkShopNameProductPage() throws InterruptedException {
+
+		String shopnameproductpage = findCss(".shop-name").getText();
+		System.out.println(shopname);
+		Assert.assertEquals("Fail-check shop name in product page", Boolean.TRUE, shopnameproductpage.equals(shopname));
+	}
+
+	public void chooseShopAndDress(String nameOfShop, int indexdress) throws InterruptedException {
+
+		// choose shop
+		Select chooseshop = new Select(driver.findElement(By.cssSelector("[id=shop_id]")));
+		if ("kyoto".equals(nameOfShop)) {
+			shopname = "京都駅前店";
+			chooseshop.selectByIndex(1);
+		} else if ("gionshio".equals(nameOfShop)) {
+			shopname = "祇園四条店";
+			chooseshop.selectByIndex(2);
+		} else if ("osaka".equals(nameOfShop)) {
+			shopname = "大阪大丸心斎橋店";
+			chooseshop.selectByIndex(3);
+		} else if ("tokyo".equals(nameOfShop)) {
+			shopname = "東京浅草店";
+			chooseshop.selectByIndex(4);
+		}
+
+		// click search
+		clickButtonCss("[value='検索する']");
+		Thread.sleep(7000);
+		// click dress
+		int row = getRowTableDate(".list.dp-flex li");
+		chooseDress(row, indexdress);
+
+	}
+
+	public void chooseDress(int amountdress, int indexdress) throws NumberFormatException, InterruptedException {
+
+		Assert.assertEquals("[FAIL:Shop have not dress", Boolean.TRUE, amountdress > 0);
+		// get price dress
+		normalpricedress = Integer.parseInt(findCss(" li:nth-child(" + indexdress + ") .price-small a").getText()
+				.replace(",", "").replace("円", ""));
+		salepricedress = Integer.parseInt(
+				findCss(" li:nth-child(" + indexdress + ") .price-sale a").getText().replace(",", "").replace("円", ""));
+		clickButtonCss("li:nth-child(" + Integer.toString(indexdress) + ") .btn-link");
 
 	}
 
@@ -161,19 +229,17 @@ public class BookingEventPlan {
 			return null;
 		}
 	}
-	
+
 	public void waitFindCSSElementLoaded(String idelement) throws InterruptedException {
-		while(findCss(idelement)==null)
-		{
+		while (findCss(idelement) == null) {
 			Thread.sleep(100);
 		}
 	}
-	
+
 	public void waitForPageLoaded(String previousurl) throws InterruptedException {
-		String currenturl=driver.getCurrentUrl();
-		while(previousurl.equals(currenturl))
-		{
-			currenturl=driver.getCurrentUrl();
+		String currenturl = driver.getCurrentUrl();
+		while (previousurl.equals(currenturl)) {
+			currenturl = driver.getCurrentUrl();
 			Thread.sleep(100);
 		}
 
@@ -186,12 +252,11 @@ public class BookingEventPlan {
 		if (str == null) {
 			return false;
 		}
-		if ("1".equals(str)) {		
+		if ("1".equals(str)) {
 			return true;
 		}
 		return false;
 	}
-
 
 	// get attribute by create a element and find xpath
 	public String get_Attribute_Element(String s, String attb) throws InterruptedException {
@@ -203,20 +268,20 @@ public class BookingEventPlan {
 	// click date in present table
 	public Boolean chooseRanDomDateOneTable() throws InterruptedException {
 
-		String DateText, parentClass, DateString;
+		String DateText, parentClass, xpathDateElement, indrDate, indcDate;
+		WebElement dateElement;
 
-		int row = getRowTableDate(".//*[@id='choose-date']/div[2]/div/table/tbody/tr");
+		int row = getRowTableDate("#choose-date tbody tr");
 
 		for (int j = 1; j <= 7; j++) {
 
 			for (int i = 1; i <= row; i++) {
-
-				indr_date = Integer.toString(i);
-				indc_date = Integer.toString(j);
+				indrDate = Integer.toString(i);
+				indcDate = Integer.toString(j);
 
 				// find class name of weekdays
-				parentClass = get_Attribute_Element(
-						".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indr_date + "]", "class");
+				parentClass = getAttributeElement(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]",
+						"class");
 				// System.out.println("tên class day:" + parentClass);
 
 				// compare the class name of current DE element is like 'thead'
@@ -224,17 +289,26 @@ public class BookingEventPlan {
 					continue;// if it is that continue with i++;
 				}
 				// if not, get a DE element
-				DateString = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indr_date + "]/td[" + indc_date
+				xpathDateElement = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]/td[" + indcDate
 						+ "]/div/div";
 
-				DE = findXpath(DateString);
+				dateElement = findXpath(xpathDateElement);
 
-				DateText = DE.getText();
-				DE.click();
-				if (assertDate() || ("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
+				DateText = dateElement.getText();
+
+				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
-					return true;
+
+					scrollAndClickXpath(xpathDateElement, 0);
+					if (assertDate())
+						continue;
+					else {
+						indcFirstSelectedDate = j;
+						indrFirstSelectedDate = i;
+						return true;
+					}
+
 				}
 
 			}
@@ -253,7 +327,24 @@ public class BookingEventPlan {
 
 	}
 
-	
+	public String getAttributeElement(String s, String attb) throws InterruptedException {
+		WebElement e = driver.findElement(By.xpath(s));
+		String result = e.getAttribute(attb);
+		return result;
+	}
+
+	public void scrollAndClickXpath(String idelement, int timesleep) throws InterruptedException {
+		WebElement element = driver.findElement(By.xpath(idelement));
+		String scrollElementIntoMiddle = "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
+				+ "var elementTop = arguments[0].getBoundingClientRect().top;"
+				+ "window.scrollBy(0, elementTop-(viewPortHeight/3));";
+
+		((JavascriptExecutor) driver).executeScript(scrollElementIntoMiddle, element);
+		Thread.sleep(timesleep);
+		element.click();
+		Thread.sleep(200);
+	}
+
 	public String getSelectedShop() {
 		List<WebElement> firstAreaElements = driver.findElements(By.cssSelector("#choose-shop li"));
 		for (WebElement element : firstAreaElements) {
@@ -377,7 +468,8 @@ public class BookingEventPlan {
 				item = findXpath(s + Integer.toString(i) + "]/div[1]/div[1]/label[1]").getText();
 				if (e.getAttribute("data-last-val") != "1") {
 					item += " x" + e.getAttribute("data-last-val");
-					// if customer choose amount more than 1 it is printed amount in detail page
+					// if customer choose amount more than 1 it is printed
+					// amount in detail page
 				}
 				item += " " + "￥" + Integer.toString(sum_1_choose);
 				OptionBookingList.add(item);
@@ -408,94 +500,53 @@ public class BookingEventPlan {
 	}
 
 	public int getRowTableDate(String s) throws InterruptedException {
-		List<WebElement> rows = driver.findElements(By.xpath(s));
+		List<WebElement> rows = driver.findElements(By.cssSelector(s));
 		int r = rows.size() - 1;// because it add a last row that is finished
 								// head tag
 		return r;
 	}
 
-	public Boolean checkMessageEarlyPriceDate(int price_early, String text_message) {
-		int price_message;
+	public void checkMessageEarlyDiscountPriceDate(int priceEarDisCell, String textMessage) {
+		int priceMessage;
+		if (priceEarDisCell > 0) {
+			textMessage = textMessage.replace("(早朝料金:", "");
+			textMessage = textMessage.replace("￥", "");
+			textMessage = textMessage.replace(",", "");
+			textMessage = textMessage.replace(")", "");
+			textMessage = textMessage.trim();
+			priceMessage = Integer.parseInt(textMessage);
 
-		text_message = text_message.replace("(早朝料金:", "");
-		text_message = text_message.replace("￥", "");
-		text_message = text_message.replace(",", "");
-		text_message = text_message.replace(")", "");
-		text_message = text_message.trim();
-		price_message = Integer.parseInt(text_message);
+			Assert.assertEquals("Fail:check message early discount price date", Boolean.TRUE,
+					priceMessage == priceEarDisCell);
+		} else if (priceEarDisCell < 0) {
+			textMessage = textMessage.replace("(夕方割引 :", "");
+			textMessage = textMessage.replace("￥", "");
+			textMessage = textMessage.replace(",", "");
+			textMessage = textMessage.replace(")", "");
+			textMessage = textMessage.trim();
+			priceMessage = Integer.parseInt(textMessage);
 
-		if (price_message == price_early)
-			return true;
+			Assert.assertEquals("Fail:check message early discount price date", Boolean.TRUE,
+					priceMessage == priceEarDisCell);
 
-		return false;
-	}
-
-	public Boolean checkMessageDiscountPriceDate(int price_Discount, String text_message) {
-		int price_message;
-
-		text_message = text_message.replace("(夕方割引 :", "");
-		text_message = text_message.replace("￥", "");
-		text_message = text_message.replace(",", "");
-		text_message = text_message.replace(")", "");
-		text_message = text_message.trim();
-		price_message = Integer.parseInt(text_message);
-
-		if (price_message == price_Discount)
-			return true;
-
-		return false;
-	}
-
-	// get all selected cell of date table
-	public int getSelectedCellDateTable() throws InterruptedException {
-		int count_cell = 0, i, j, stop = 0;
-		int row = getRowTableDate(".//*[@id='choose-date']/div[2]/div/table/tbody/tr");
-		String a, b, attclass, parentClass;
-		WebElement ele;
-
-		// get the last select date of table
-		for (j = 1; j <= 7; j++) {
-			for (i = 1; i <= row && stop <= row - indr_first_selected_date + 1; i++) {
-				a = Integer.toString(i);
-				b = Integer.toString(j);
-
-				parentClass = get_Attribute_Element(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + a + "]",
-						"class");
-
-				// compare the class name of current DE element is like 'thead'
-				if ("thead".equals(parentClass)) {
-					continue;
-				} // if it is that continue with i++;
-
-				ele = findXpath((".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + a + "]/td[" + b + "]/div"));
-
-				attclass = ele.getAttribute("class");
-				if ("hour selected".equals(attclass)) {
-					count_cell++;
-					stop++;
-					if (count_cell == 1) {
-						indr_first_selected_date = i;
-						indc_first_selected_date = j;
-					}
-					indr_last_seleted_date = i;
-					indc_last_seleted_date = j;
-				}
-
-			}
 		}
-		return count_cell;
+
 	}
 
 	// xpath cell with xpath 'tr[x]'
 	public int getPriceDate(String xpath_cell) throws InterruptedException {
-		xpath_cell=xpath_cell+"/td["+Integer.toString(indc_first_selected_date)+"]/div/div/span[2]";
-		String feecellclass = get_Attribute_Element(xpath_cell, "class");
+		String trclass = findXpath(xpath_cell).getAttribute("class");
+		if (!trclass.contains("even-early")) {
+			return 0;
+		}
+		xpath_cell = xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]/div/div/span[2]";
+		String pricecell = findXpath(xpath_cell).getText();
 
-		if ("discount".equals(feecellclass)) {
+		if ("-300円".equals(pricecell)) {
 
 			return -300;
 		} else {
-			if ("new even-early".equals(feecellclass)) {
+			if ("+500円".equals(pricecell)) {
 
 				return 500;
 			}
@@ -504,168 +555,64 @@ public class BookingEventPlan {
 
 	}
 
-	public Boolean checkTitleDateMessageTable() throws InterruptedException {
-		String title = findXpath(".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[1]").getText();
-		String get_title_var, date_var, time_first_date, time_last_date;
-		String hour_last_time, min_last_time;
+	public void checkTitleDateMessageTable() throws InterruptedException {
 
-		date_var = get_Attribute_Element(
-				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_first_selected_date)
-						+ "]/td[" + Integer.toString(indc_first_selected_date) + "]/div",
-				"data-time_date");
-		date_var = convertDateDetailString(date_var);// convert
-														// 2016-06-09->2016-6-9
-		date_var = date_var.substring(5);// get 6-9
-		date_var = date_var.replace("-", "/");
+		String getTiltleMessage = "";
+		String titleMessage = findCss("#allocate-info-time").getText();
+		String xpathSelectedCell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr["
+				+ Integer.toString(indrFirstSelectedDate) + "]/td[" + Integer.toString(indcFirstSelectedDate) + "]";
 
-		time_first_date = get_Attribute_Element(
-				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_first_selected_date)
-						+ "]/td[" + Integer.toString(indc_first_selected_date) + "]/div",
-				"data-time_hour");
-		time_last_date = get_Attribute_Element(
-				".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_last_seleted_date)
-						+ "]/td[" + Integer.toString(indc_last_seleted_date) + "]/div",
-				"data-time_hour");
-		// add 30s for last time get by date table
-		hour_last_time = time_last_date.substring(0, 2);
-		min_last_time = time_last_date.substring(3);
-		if ("00".equals(min_last_time)) {
-			min_last_time = "30";
-		} else// min =30
-		{
-			min_last_time = "00";
-			hour_last_time = Integer.toString(Integer.parseInt(hour_last_time) + 1);
-		}
-		get_title_var = date_var + " " + time_first_date + "-" + hour_last_time + ":" + min_last_time;
-		if (!get_title_var.equals(title)) {
-			System.out.println("Title date time Message of date table is wrong:" + get_title_var);
-			return false;
-		}
-		return true;
+		getTiltleMessage = findXpath(xpathSelectedCell + "/div").getAttribute("data-time_date");
+		getTiltleMessage = getTiltleMessage.substring(0, 4) + "年" + getTiltleMessage.substring(5, 7) + "月"
+				+ getTiltleMessage.substring(8) + "日 ";
+		getTiltleMessage += findXpath(
+				".//*[@id='choose-date']/div[2]/div/table/thead/tr/td[" + Integer.toString(indcFirstSelectedDate) + "]")
+						.getText().replaceAll("[0-9]", "").replace("/", "");
+		getTiltleMessage += " " + findXpath(xpathSelectedCell + "/div").getAttribute("data-time_hour");
+
+		// check
+		System.out.println("Title message:" + getTiltleMessage);
+		Assert.assertEquals("Fail:check title message date", Boolean.TRUE, getTiltleMessage.equals(titleMessage));
+		titleMessageDateAllPage=titleMessage;
 
 	}
 
 	// xpath cell with xpath to 'tr[x]'
-	public Boolean checkOneMessageDateTable(String xpath_cell, String text_message, String text_price_message,
-			int num_cell, int pr) throws InterruptedException {
 
-		String xpath_selected, getted_message, hour_cell;
-		int price_cell;
-
-		xpath_selected = xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]/div";
-		hour_cell = get_Attribute_Element(xpath_selected, "data-time_hour");
-
-		if (pr > 0) {
-
-			price_cell = num_cell * pr;
-			if (!checkMessageEarlyPriceDate(price_cell, text_price_message))
-				return false;
-			getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
-			if (getted_message.equals(text_message)) {
-				num_ear_dis += num_cell;
-				return true;
-			}
-
-		} else {
-
-			if (pr < 0) {
-
-				price_cell = num_cell * pr;
-				if (!checkMessageDiscountPriceDate(price_cell, text_price_message))
-					return false;
-				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
-				if (getted_message.equals(text_message)) {
-					num_ear_dis += num_cell;
-					return true;
-
-				}
-
-			} else {
-				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します";
-				if (getted_message.equals(text_message)) {
-					return true;
-
-				}
-			}
-		}
-
-		return false;
-	}
-
-	public Boolean getCheckMessageOneDateTable(String xpath_cell, String text_message, String text_price_message,
-			int num, int pr, int li_message) throws InterruptedException {
-		text_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[3]/ul/li" + "["
-				+ Integer.toString(li_message) + "]"))).getText();
-		pr = getPriceDate(xpath_cell);
-		ear_dis_fee += pr * num;// get early or discount fee to check total
-								// price
-		if (pr != 0) {
-			text_price_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[3]/ul/li["
-					+ Integer.toString(li_message) + "]/span"))).getText();
-		} else {
-			text_price_message = "";
-		}
-
-		if (!checkOneMessageDateTable(xpath_cell, text_message, text_price_message, num, pr)) {
-			System.out.println("Message date " + li_message + " is wrong");
-			return false;
-		}
-
-		return true;
-
-	}
-
-	public Boolean checkMessageDateTable() throws InterruptedException {
-		int count_cell, num_cell, num_lost = 0, li_message = 1, pr = 0;
-		String xpath_cell, text_message = "", text_price_message = "";
-		count_cell = getSelectedCellDateTable();
+	public void checkMessageDateTable() throws InterruptedException {
 
 		// check title message date table first
-		if (!checkTitleDateMessageTable())
-			return false;
+		checkTitleDateMessageTable();
 
-		if (count_cell == 1) {
-			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr["
-					+ Integer.toString(indr_first_selected_date) + "]";
-			if (!getCheckMessageOneDateTable(xpath_cell, text_message, text_price_message, num_person, pr,
-					li_message)) {
-				return false;
-			}
-			return true;
-
+		// check message date
+		String xpathSelectedCell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr["
+				+ Integer.toString(indrFirstSelectedDate) + "]";
+		int pr = getPriceDate(xpathSelectedCell);
+		xpathSelectedCell += "/td[" + Integer.toString(indcFirstSelectedDate) + "]/div";
+		String hourCell = getAttributeElement(xpathSelectedCell, "data-time_hour");
+		String gettedMessage, textMessage = findCss("#allocate-info-hour-list li").getText();
+		String textPriceMessage="";
+		if (pr != 0) {
+			textPriceMessage = findCss("#allocate-info-hour-list span").getText();
 		}
+		checkMessageEarlyDiscountPriceDate(pr, textPriceMessage);
+		if (pr > 0) {
+			gettedMessage = hourCell + " から1 名様のお着付けを開始します" + textPriceMessage;
 
-		for (int i = indr_first_selected_date; i < indr_last_seleted_date; i++) {
+		} else {
+			if (pr < 0) {
 
-			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(i) + "]";
-			if (get_Attribute_Element(xpath_cell, "class").equals("thead")) {
-				continue;
+				gettedMessage = hourCell + " から1 名様のお着付けを開始します" + textPriceMessage;
 			}
-			if ("hour selected".equals(get_Attribute_Element(
-					xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]" + "/div", "class"))) {
-				num_cell = Integer.parseInt(
-						findXpath((xpath_cell + "/td[" + Integer.toString(indc_first_selected_date) + "]/div/div/span"))
-								.getText());
-				num_lost = num_lost + num_cell;
 
-				if (!getCheckMessageOneDateTable(xpath_cell, text_message, text_price_message, num_cell, pr,
-						li_message)) {
-					return false;
-				}
+			else {
+				gettedMessage = hourCell + " から1 名様のお着付けを開始します";
 
-				li_message++;
 			}
 		}
-
-		num_lost = num_person - num_lost;
-		xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indr_last_seleted_date)
-				+ "]";
-		if (!getCheckMessageOneDateTable(xpath_cell, text_message, text_price_message, num_lost, pr, li_message)) {
-			System.out.println("Message date is wrong :" + text_message);
-			return false;
-		}
-
-		return true;
+		System.out.println(gettedMessage);
+		Assert.assertEquals("Fail:check message date table", Boolean.TRUE, gettedMessage.equals(textMessage));
+		MessageDateAllPage=textMessage;
 
 	}
 
