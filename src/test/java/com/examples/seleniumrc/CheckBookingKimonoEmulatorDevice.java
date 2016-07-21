@@ -431,7 +431,7 @@ public class CheckBookingKimonoEmulatorDevice {
 		}
 //
 //		// choose photo table 1
-	scrollAndClickCSS("[for='checkbox-control-all']", 0);
+		scrollAndClickCSS("[for='checkbox-control-all']", 0);
 //		Select dropdownbox58 = new Select(driver.findElement(By.cssSelector("[name='book_options[58]']")));
 //		dropdownbox58.selectByIndex(1);
 		Thread.sleep(200);
