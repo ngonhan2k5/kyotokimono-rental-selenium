@@ -29,7 +29,7 @@ public class BookingEventPlan {
 	List optionDetailList = new ArrayList();
 	List informationDressProduct = new ArrayList();
 	List informationDressCart = new ArrayList();
-	
+
 	int indcFirstSelectedDate, indrFirstSelectedDate;
 	//
 	String iddress;
@@ -82,7 +82,13 @@ public class BookingEventPlan {
 		Thread.sleep(4000);
 
 		// choose shop and dress
-		chooseShopAndDress("osaka",4);// a is a first dress in list
+		String nameShop;
+		// nameShop = "kyoto";
+		// nameShop = "gionshio";
+		 nameShop = "osaka";
+		//nameShop = "tokyo";
+
+		chooseShopAndDress(nameShop, 1);// a is a first dress in list
 		Thread.sleep(2000);
 		// choose date
 		chooseRanDomDate();
@@ -129,32 +135,39 @@ public class BookingEventPlan {
 				.println("***************************************end test********************************************");
 
 	}
+	// public void chooesOneDress() throws InterruptedException {
+	//
+	// }
 
 	public void compareTwoList(List<String> l1, List<String> l2) throws InterruptedException {
 		Assert.assertEquals("Fail-size of two list", Boolean.TRUE, l1.size() == l2.size());
 		for (int i = 0; i < l1.size(); i++) {
-			Assert.assertEquals("Fail-check item  of two list: " + l1.get(i), Boolean.TRUE, l1.get(i).equals(l2.get(i)));
+			Assert.assertEquals("Fail-check item  of two list: " + l1.get(i), Boolean.TRUE,
+					l1.get(i).equals(l2.get(i)));
 		}
 
 	}
 
 	public void getDetailList() throws InterruptedException {
+		// get name dress
+		// get account of dress
 		int rowDetailList = getRowTable(".box-padding.show-info-detail .wrap-item-product");
 		for (int i = 1; i <= rowDetailList; i++) {
-			optionDetailList.add(findCss(".wrap-item-product:nth-child(" + Integer.toString(i) + ") .name").getText()
-					.replace("\n", ""));
-			optionDetailList.add(findCss(".wrap-item-product:nth-child(" + Integer.toString(i) + ") .price-large")
-					.getText().replace("\n", "").replace("￥", "").replace("(税抜)", "").replace(",", "").trim());
-			optionDetailList.add(findCss(".wrap-item-product:nth-child(" + Integer.toString(i) + ") .height span")
-					.getText().replace("\n", ""));
-			optionDetailList.add(findCss(".wrap-item-product:nth-child(" + Integer.toString(i) + ") .length span")
-					.getText().replace("\n", ""));
-			optionDetailList.add(findCss(".wrap-item-product:nth-child(" + Integer.toString(i) + ") .neck_cuff span")
-					.getText().replace("\n", ""));
-			optionDetailList.add(findCss(".wrap-item-product:nth-child(" + Integer.toString(i) + ") .front_width span")
-					.getText().replace("\n", ""));
-			optionDetailList.add(findCss(".wrap-item-product:nth-child(" + Integer.toString(i) + ") .back_width span")
-					.getText().replace("\n", ""));
+			optionDetailList.add(findCss(
+					".box-padding.show-info-detail .wrap-item-product:nth-child(" + Integer.toString(i) + ") .name")
+							.getText().replace("\n", ""));
+			optionDetailList
+					.add(findCss(".box-padding.show-info-detail .wrap-item-product:nth-child(" + Integer.toString(i)
+							+ ") .price-large").getText().replace("￥", "").replace(",", "").replace("(税抜)", "").trim());
+			// get information of dress
+			int rowinfodress = getRowTable(".box-padding.show-info-detail .wrap-item-product:nth-child("
+					+ Integer.toString(i) + ") .property li");
+			for (int j = 2; j <= rowinfodress; j++) {
+				optionDetailList
+						.add(findCss(".box-padding.show-info-detail .wrap-item-product:nth-child(" + Integer.toString(i)
+								+ ") .property li:nth-child(" + Integer.toString(j) + ")").getText().replace("\n", ""));
+			}
+			// get option
 			int rowOption = getRowTable(".wrap-item-product:nth-child(" + Integer.toString(i) + ") .box-option p");
 			if (rowOption > 0) {
 				for (int j = 1; j <= rowOption; j++) {
@@ -168,6 +181,7 @@ public class BookingEventPlan {
 							.getText().replace("￥", "").replace(",", ""));
 
 		}
+		// get photo
 		int rowPhotoList = getRowTable(".wrap-option-list .group-opt");
 		for (int k = 1; k <= rowPhotoList; k++) {
 			int rowphototable = getRowTable(
@@ -304,8 +318,9 @@ public class BookingEventPlan {
 	}
 
 	public void chooseOption() throws InterruptedException {
-		clickButtonCss("#product-"+iddress+" tbody td:nth-child(3) li:nth-child(3) label ");
-		//clickButtonCss("#product-"+iddress+" tbody td:nth-child(5) li:nth-child(3) label");
+		clickButtonCss("#product-" + iddress + " tbody td:nth-child(3) li:nth-child(3) label ");
+		// clickButtonCss("#product-"+iddress+" tbody td:nth-child(5)
+		// li:nth-child(3) label");
 
 		// choose photos
 		clickButtonCss("[id='book_options[59]SelectBoxItText']");
@@ -335,11 +350,11 @@ public class BookingEventPlan {
 	}
 
 	public void getInfoDressProductPage() throws InterruptedException {
-		int rows=getRowTable("#product-"+iddress+" .property li");
-		for(int i=2;i<=rows;i++)
-		{
-			String s=findCss("#product-"+iddress+" .property li:nth-child("+Integer.toString(i)+")").getText().replace("\n","");
+		int rows = getRowTable(".property li");
+		for (int i = 2; i <= rows; i++) {
+			String s = findCss(".property li:nth-child(" + Integer.toString(i) + ")").getText().replace("\n", "");
 			informationDressProduct.add(s);
+			optionBookingList.add(s);
 		}
 	}
 
@@ -376,15 +391,17 @@ public class BookingEventPlan {
 	}
 
 	public void checkInfoDress() throws InterruptedException {
-		int rows=getRowTable("#product-"+iddress+" .property li");
-		for(int i=2;i<=rows;i++)
-		{
-			String s=findCss("#product-"+iddress+" .property li:nth-child("+Integer.toString(i)+")").getText().replace("\n","");
+		int rows = getRowTable("#product-" + iddress + " .property li");
+		for (int i = 2; i <= rows; i++) {
+			String s = findCss("#product-" + iddress + " .property li:nth-child(" + Integer.toString(i) + ")").getText()
+					.replace("\n", "");
 			informationDressCart.add(s);
 		}
-		
-		compareTwoList(informationDressProduct,informationDressCart);
-		
+		System.out.println(informationDressCart);
+		System.out.println(informationDressProduct);
+
+		compareTwoList(informationDressProduct, informationDressCart);
+
 	}
 
 	public void checkPriceOfDress() throws InterruptedException {
@@ -497,10 +514,9 @@ public class BookingEventPlan {
 			return itemElement;
 		} catch (Exception ex) {
 			System.out.println("Not found for find button:" + idButton);
-			
+
 			return null;
 		}
-		
 
 	}
 
@@ -510,10 +526,10 @@ public class BookingEventPlan {
 			return itemElement;
 		} catch (Exception ex) {
 			System.out.println("Not found for find button:" + idButton);
-			
+
 			return null;
 		}
-		
+
 	}
 
 	public void waitFindCSSElementLoaded(String idelement) throws InterruptedException {
@@ -562,6 +578,7 @@ public class BookingEventPlan {
 
 		String DateText, parentClass, xpathDateElement, indrDate, indcDate;
 		WebElement dateElement;
+		int alreadyClick = 0;
 
 		int row = getRowTable("#choose-date tbody tr") - 1;
 
@@ -582,23 +599,28 @@ public class BookingEventPlan {
 				}
 				// if not, get a DE element
 				xpathDateElement = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]/td[" + indcDate
-						+ "]/div/div";
+						+ "]/div";
 
-				dateElement = findXpath(xpathDateElement);
+				dateElement = findXpath(xpathDateElement+"/div");
 
 				DateText = dateElement.getText();
 
 				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
-
-					scrollAndClickXpath(xpathDateElement, 0);
+					if (alreadyClick==0) {
+						scrollAndClickXpath(xpathDateElement, 0);
+					}
 					if (assertDate())
 						continue;
 					else {
-						indcFirstSelectedDate = j;
-						indrFirstSelectedDate = i;
+						alreadyClick++;
+						Thread.sleep(200);
+						if ("hour selected".equals(getAttributeElementXpath(xpathDateElement, "class"))) {
+							indcFirstSelectedDate = j;
+							indrFirstSelectedDate = i;
 						return true;
+						}
 					}
 
 				}
@@ -889,9 +911,5 @@ public class BookingEventPlan {
 				getPriceTax == PriceTax);
 
 	}
-
-	
-
-	
 
 }
