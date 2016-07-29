@@ -229,6 +229,7 @@ public class YukataReantalTest {
 	// click date in present table
 	public Boolean chooseRanDomDateOneTable() throws InterruptedException {
 
+		int alreadyClick=0;
 		String DateText, parentClass, DateString;
 
 		int row = getRowTableDate(".//*[@id='choose-date']/div[2]/div/table/tbody/tr");
@@ -236,7 +237,7 @@ public class YukataReantalTest {
 		for (int j = 1; j <= 7; j++) {
 
 			for (int i = 1; i <= row; i++) {
-
+				System.out.println("finding cell row " + i + " column " + j);
 				indrDate = Integer.toString(i);
 				indcDate = Integer.toString(j);
 
@@ -251,20 +252,28 @@ public class YukataReantalTest {
 				}
 				// if not, get a DE element
 				DateString = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]/td[" + indcDate
-						+ "]/div/div";
+						+ "]/div";
 
-				dateElement = findXpath(DateString);
+				dateElement = findXpath(DateString+"/div");
+
 				DateText = dateElement.getText();
+
 				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
-					dateElement.click();
+					if (alreadyClick == 0) {
+						clickButtonXpath(DateString);
+					}
 					if (assertDate())
 						continue;
 					else {
-						indcFirstSelectedDate = j;
-						indrFirstSelectedDate = i;
-						return true;
+						alreadyClick++;
+						Thread.sleep(200);
+						if ("hour selected".equals(getAttributeElement(DateString, "class"))) {
+							indcFirstSelectedDate = j;
+							indrFirstSelectedDate = i;
+							return true;
+						}
 					}
 				}
 

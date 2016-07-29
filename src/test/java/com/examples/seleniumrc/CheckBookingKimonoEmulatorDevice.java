@@ -984,6 +984,7 @@ public class CheckBookingKimonoEmulatorDevice {
 		for (int i = 0; i < numPerson; i++) {
 			getRowOptionDetailOnePerson(i);
 		}
+		
 		// get photo option
 		for (int i = 1; i <= 4; i++) {
 			getRowphotoDetailOneTable(i);
