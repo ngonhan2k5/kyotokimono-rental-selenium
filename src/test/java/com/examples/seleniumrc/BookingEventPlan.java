@@ -71,7 +71,7 @@ public class BookingEventPlan {
 	}
 
 	@Test
-	public void checkBookingKimonoStandard() throws InterruptedException {
+	public void checkMain() throws InterruptedException {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
@@ -103,10 +103,10 @@ public class BookingEventPlan {
 		numPerson++;
 		// choose shop and dress
 		String nameShop;
-		// nameShop = "kyoto";
+		 nameShop = "kyoto";
 		// nameShop = "gionshio";
 		//nameShop = "osaka";
-		 nameShop = "tokyo";
+		// nameShop = "tokyo";
 		chooseShopAndDress(nameShop, 1);// a is a first dress in list
 		Thread.sleep(2000);
 		// choose date
@@ -256,7 +256,7 @@ public class BookingEventPlan {
 			}
 			String item = findCss(s + " label").getText();
 			if (!"1".equals(Integer.toString(value))) {
-				item += " x" + pr;
+				item += " x" + value;
 				// if customer choose amount more than 1 it is printed
 				// amount in detail page
 			}
@@ -338,10 +338,10 @@ public class BookingEventPlan {
 		clickButtonCss("[id='book_options[59]SelectBoxItOptions'] li:nth-child(2)");
 
 		clickButtonCss("[id='book_options[60]SelectBoxItText']");
-		clickButtonCss("[id='book_options[60]SelectBoxItOptions'] li:nth-child(2)");
+		clickButtonCss("[id='book_options[60]SelectBoxItOptions'] li:nth-child(3)");
 
 		clickButtonCss("[id='book_options[61]SelectBoxItText']");
-		clickButtonCss("[id='book_options[61]SelectBoxItOptions'] li:nth-child(2)");
+		clickButtonCss("[id='book_options[61]SelectBoxItOptions'] li:nth-child(4)");
 
 		clickButtonCss("[id='book_options[62]SelectBoxItText']");
 		clickButtonCss("[id='book_options[62]SelectBoxItOptions'] li:nth-child(2)");
@@ -350,7 +350,7 @@ public class BookingEventPlan {
 		clickButtonCss("[id='book_options[63]SelectBoxItOptions'] li:nth-child(2)");
 
 		clickButtonCss("[id='book_options[64]SelectBoxItText']");
-		clickButtonCss("[id='book_options[64]SelectBoxItOptions'] li:nth-child(2)");
+		clickButtonCss("[id='book_options[64]SelectBoxItOptions'] li:nth-child(5)");
 
 		clickButtonCss("[id='book_options[65]SelectBoxItText']");
 		clickButtonCss("[id='book_options[65]SelectBoxItOptions'] li:nth-child(2)");
