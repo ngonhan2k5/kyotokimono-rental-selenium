@@ -47,7 +47,7 @@ public class CheckNameAndPriceKimono {
 	// }
 
 	@Test
-	public void checkBookingKimono() throws InterruptedException {
+	public void checkMain() throws InterruptedException {
 
 		System.out.println("*************************checknameandpriceYukata***************************");
 		for (int i = 1; i <= listIdKimono.size(); i++) {

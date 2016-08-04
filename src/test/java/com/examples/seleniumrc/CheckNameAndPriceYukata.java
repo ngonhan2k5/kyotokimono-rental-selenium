@@ -41,7 +41,7 @@ public class CheckNameAndPriceYukata {
 	// }
 
 	@Test
-	public void checkBookingKimono() throws InterruptedException {
+	public void checkMain() throws InterruptedException {
 		System.out.println("*************************checknameandpriceYukata***************************");
 		
 		String a, b;

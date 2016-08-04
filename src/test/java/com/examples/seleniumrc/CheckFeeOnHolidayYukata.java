@@ -59,7 +59,7 @@ public class CheckFeeOnHolidayYukata {
 	}
 
 	@Test
-	public void checkBookingKimonoStandard() throws InterruptedException {
+	public void checkMain() throws InterruptedException {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
