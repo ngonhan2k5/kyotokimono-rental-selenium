@@ -270,7 +270,7 @@ public class BookingEventPlan {
 	public void checkPricePhotoTable() throws InterruptedException {
 
 		int getPhotoPrice = 0;
-		getPhotoPrice += getPricePhoto("[data-id='58']") + getPricePhoto("[data-id='58']")
+		getPhotoPrice += getPricePhoto("[data-id='58']") 
 				+ getPricePhoto("[data-id='59']") + getPricePhoto("[data-id='60']") + getPricePhoto("[data-id='61']")
 				+ getPricePhoto("[data-id='62']") + getPricePhoto("[data-id='63']") + getPricePhoto("[data-id='64']")
 				+ getPricePhoto("[data-id='65']") + getPricePhoto("[data-id='66']") + getPricePhoto("[data-id='67']")
