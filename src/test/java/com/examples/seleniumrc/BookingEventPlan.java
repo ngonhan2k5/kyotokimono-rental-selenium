@@ -2,6 +2,7 @@ package com.examples.seleniumrc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -23,21 +24,18 @@ public class BookingEventPlan {
 
 	WebDriver driver;
 	int numPerson = 0;
-	String shopname;
+	int normalpricedress, salepricedress;
 	int earlyDiscountFee = 0;
+	int totalPrice = 0, getTotalPrice1person = 0, getPriceTax, PriceTax;
+	int indcFirstSelectedDate, indrFirstSelectedDate, indrLastSelectedDate, indcLastSelectedDate;
 	List optionBookingList = new ArrayList();
 	List optionDetailList = new ArrayList();
 	List informationDressProductList = new ArrayList();
 	List informationDressCartList = new ArrayList();
 	List messageDateProductpageList = new ArrayList();
-
-	int indcFirstSelectedDate, indrFirstSelectedDate, indrLastSelectedDate, indcLastSelectedDate;
-	//
+	String shopname;
 	String iddress;
-	int normalpricedress, salepricedress;
 	String titleMessageDateAllPage;
-	String height, length, Yuki, beforeWidth, rearWidth;
-	int totalPrice = 0, getTotalPrice1person = 0, getPriceTax, PriceTax;
 	String dressName;
 
 	@Before
@@ -103,11 +101,11 @@ public class BookingEventPlan {
 		numPerson++;
 		// choose shop and dress
 		String nameShop;
-		 nameShop = "kyoto";
-		// nameShop = "gionshio";
+		// nameShop = "kyoto";
+		 nameShop = "gionshio";
 		//nameShop = "osaka";
 		// nameShop = "tokyo";
-		chooseShopAndDress(nameShop, 1);// a is a first dress in list
+		chooseShopAndDress(nameShop, 7);// a is a first dress in list
 		Thread.sleep(2000);
 		// choose date
 		chooseRanDomDate();
@@ -635,7 +633,7 @@ public class BookingEventPlan {
 				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
 					// nothing
 				} else {
-					if (alreadyClick == 0) {
+					if (alreadyClick ==20) {
 						scrollAndClickXpath(xpathDateElement, 0);
 					}
 					if (assertDate())
@@ -663,10 +661,10 @@ public class BookingEventPlan {
 		while (!chooseRanDomDateOneTable()) {
 			clickButtonXpath(".//*[@id='page-next']");
 			Thread.sleep(3000);
-			chooseRanDomDateOneTable();
 		}
-
+	
 	}
+	
 
 	public String getAttributeElement(String s, String attb) throws InterruptedException {
 		WebElement e = driver.findElement(By.xpath(s));
