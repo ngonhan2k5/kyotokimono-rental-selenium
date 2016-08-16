@@ -43,10 +43,10 @@ public class CheckBookingKimonoEmulatorDevice {
 	@Before
 	public void setUp() throws Exception {
 
-		setupEmuatorDevice("Apple iPhone 4");
-	//	setupEmuatorDevice("Apple iPhone 5");
+	//	setupEmuatorDevice("Apple iPhone 4");
+	//setupEmuatorDevice("Apple iPhone 5");
 	//	setupEmuatorDevice("Apple iPhone 6");
-//		setupEmuatorDevice("Apple iPhone 6 Plus");
+	setupEmuatorDevice("Apple iPhone 6 Plus");
 	
 
 	}
