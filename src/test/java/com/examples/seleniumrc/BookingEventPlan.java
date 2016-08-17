@@ -56,6 +56,7 @@ public class BookingEventPlan {
 
 	public boolean assertDate() throws InterruptedException {
 
+		Thread.sleep(1000);
 		try {
 			Alert alertDate = driver.switchTo().alert();
 			alertDate.accept();
@@ -108,7 +109,10 @@ public class BookingEventPlan {
 		chooseShopAndDress(nameShop, 7);// a is a first dress in list
 		Thread.sleep(2000);
 		// choose date
-		chooseRanDomDate();
+		//chooseRanDomDate();
+		scrollAndClickXpath(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[20]/td[3]/div",0);
+		assertDate();
+				
 
 		// check message date
 		checkMessageDateTable();

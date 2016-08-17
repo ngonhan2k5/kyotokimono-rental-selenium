@@ -1,5 +1,7 @@
 package com.examples.seleniumrc;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -7,13 +9,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
 import com.examples.seleniumrc.util.PropertyReader;
+import com.thoughtworks.selenium.webdriven.commands.KeyEvent;
 
 public class YukataReantalTest {
 
@@ -35,12 +40,17 @@ public class YukataReantalTest {
 
 	@Before
 	public void setUp() throws Exception {
+
 		String driverUrl = PropertyReader.getValue("chromedriver");
 		System.setProperty("webdriver.chrome.driver", driverUrl);
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.get("https://kyotokimono-rental.com/reserve");
 		Thread.sleep(4000);
+
+//		//press esc
+//		Robot robot = new Robot();
+//		robot.keyPress(27);
 
 	}
 
@@ -50,11 +60,10 @@ public class YukataReantalTest {
 	// }
 
 	public boolean assertDate() throws InterruptedException {
-
+		
 		try {
 			Alert alertDate = driver.switchTo().alert();
 			alertDate.accept();
-			Thread.sleep(400);
 			return true;
 		} catch (NoAlertPresentException Ex) {
 			Thread.sleep(400);
@@ -68,16 +77,16 @@ public class YukataReantalTest {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		numPerson = 2;
+		numPerson = 19;
 
-		// shopName = "kyoto";
+		shopName = "kyoto";
 		// shopName = "gionshijo";
 		// shopName = "osaka";
 		// shopName = "tokyo";
 
 		// shopName = "kamakura";
 		// shopName = "kinkakuji";
-		shopName = "shinkyogoku";
+		// shopName = "shinkyogoku";
 		// shopName = "kiyomizuzaka";
 
 		// select people
@@ -147,7 +156,6 @@ public class YukataReantalTest {
 			return true;
 		} catch (Exception ex) {
 			System.out.println("Not found for click button:" + idButton);
-			System.exit(0);
 			return false;
 		}
 	}
@@ -160,7 +168,6 @@ public class YukataReantalTest {
 			return true;
 		} catch (Exception ex) {
 			System.out.println("Not found for click button:" + idButton);
-			System.exit(0);
 			return false;
 		}
 	}
@@ -229,7 +236,7 @@ public class YukataReantalTest {
 	// click date in present table
 	public Boolean chooseRanDomDateOneTable() throws InterruptedException {
 
-		int alreadyClick=0;
+		int alreadyClick = 0;
 		String DateText, parentClass, DateString;
 
 		int row = getRowTableDate(".//*[@id='choose-date']/div[2]/div/table/tbody/tr");
@@ -254,7 +261,7 @@ public class YukataReantalTest {
 				DateString = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]/td[" + indcDate
 						+ "]/div";
 
-				dateElement = findXpath(DateString+"/div");
+				dateElement = findXpath(DateString + "/div");
 
 				DateText = dateElement.getText();
 
@@ -349,7 +356,9 @@ public class YukataReantalTest {
 		if (!seLectShop(shopname))
 			return false;
 		Thread.sleep(3000);
-		chooseRanDomDate();
+		// chooseRanDomDate();
+		clickButtonXpath(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[20]/td[3]/div");
+		assertDate();
 		return true;
 
 	}
