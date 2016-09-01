@@ -4,6 +4,10 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import javax.swing.text.html.HTMLDocument.Iterator;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +19,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.examples.seleniumrc.util.PropertyReader;
 import com.thoughtworks.selenium.webdriven.commands.KeyEvent;
@@ -48,9 +54,9 @@ public class YukataReantalTest {
 		driver.get("https://kyotokimono-rental.com/reserve");
 		Thread.sleep(4000);
 
-//		//press esc
-//		Robot robot = new Robot();
-//		robot.keyPress(27);
+		// press esc
+		Robot robot = new Robot();
+		robot.keyPress(27);
 
 	}
 
@@ -60,7 +66,6 @@ public class YukataReantalTest {
 	// }
 
 	public boolean assertDate() throws InterruptedException {
-		
 		try {
 			Alert alertDate = driver.switchTo().alert();
 			alertDate.accept();
@@ -100,6 +105,8 @@ public class YukataReantalTest {
 		// get price of dress because price dress of all person is same
 		priceDress = Integer.parseInt(getAttributeElement(".//*[@id='person_amount']", "data-value"));
 		priceDressWeb = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / numPerson;
+		System.out.println("gia web" + priceDressWeb);
+		System.out.println("gia thuong" + priceDress);
 
 		// click place and date
 		if (!seLectShopAndDate(shopName))
@@ -357,8 +364,9 @@ public class YukataReantalTest {
 			return false;
 		Thread.sleep(3000);
 		// chooseRanDomDate();
-		clickButtonXpath(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[20]/td[3]/div");
-		assertDate();
+		clickButtonXpath(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[13]/td[5]/div");
+		indcFirstSelectedDate = 5;
+		indrFirstSelectedDate = 13;
 		return true;
 
 	}
@@ -696,7 +704,7 @@ public class YukataReantalTest {
 				}
 			}
 		}
-
+		System.out.println(getted_message);
 		return false;
 	}
 
@@ -855,10 +863,11 @@ public class YukataReantalTest {
 	public int checkTotalPricePayWebBooking() throws InterruptedException {
 		// check price pay web
 		int totalpriceweb = totalprice - priceDress * numPerson + priceDressWeb * numPerson;
+
 		Assert.assertEquals("[FAIL]:check total price pay web booking", Boolean.TRUE,
 				totalpriceweb == (Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value"))));
 		// check price tax pay web
-		int totalpricewebtax = (int) (totalpriceweb * 1.08);
+		int totalpricewebtax = (int) Math.round((double) (totalpriceweb * 1.08));
 		String ttpricetax = findCss("#total_cost_reduced_tax").getText();
 		ttpricetax = ttpricetax.replace("￥", "");
 		ttpricetax = ttpricetax.replace(",", "");

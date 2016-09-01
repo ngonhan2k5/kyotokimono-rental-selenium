@@ -343,7 +343,7 @@ public class CheckBookingKimonoEmulatorDevice {
 	public void chooseRanDomDate() throws InterruptedException {
 
 		int i = 1;
-		while (i <= 8) {
+		while (i <= 7) {
 			scrollAndClickXpath(".//*[@id='page-next']", 0);
 			Thread.sleep(3000);
 			i++;
@@ -933,7 +933,7 @@ public class CheckBookingKimonoEmulatorDevice {
 		Assert.assertEquals("[FAIL]:check total price pay web booking", Boolean.TRUE,
 				totalpriceweb == (Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value"))));
 		// check price tax pay web
-		int totalpricewebtax = (int) (totalpriceweb * 1.08);
+		int  totalpricewebtax =(int) Math.round((double) (totalpriceweb * 1.08));
 		String ttpricetax = findCss("#total_cost_reduced_tax").getText();
 		ttpricetax = ttpricetax.replace("￥", "");
 		ttpricetax = ttpricetax.replace(",", "");

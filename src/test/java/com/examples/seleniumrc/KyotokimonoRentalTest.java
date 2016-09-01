@@ -874,7 +874,7 @@ public class KyotokimonoRentalTest {
 		Assert.assertEquals("[FAIL]:check total price pay web booking", Boolean.TRUE,
 				totalpriceweb == (Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value"))));
 		// check price tax pay web
-		int totalpricewebtax = (int) (totalpriceweb * 1.08);
+		int  totalpricewebtax =(int) Math.round((double) (totalpriceweb * 1.08));
 		String ttpricetax = findCss("#total_cost_reduced_tax").getText();
 		ttpricetax = ttpricetax.replace("￥", "");
 		ttpricetax = ttpricetax.replace(",", "");
