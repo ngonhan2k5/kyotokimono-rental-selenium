@@ -82,12 +82,12 @@ public class YukataReantalTest {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		numPerson = 19;
+		numPerson = 2;
 
-		shopName = "kyoto";
+		//shopName = "kyoto";
 		// shopName = "gionshijo";
 		// shopName = "osaka";
-		// shopName = "tokyo";
+		 shopName = "tokyo";
 
 		// shopName = "kamakura";
 		// shopName = "kinkakuji";
@@ -299,6 +299,12 @@ public class YukataReantalTest {
 	// Click another week if have not select a date whole table
 	public void chooseRanDomDate() throws InterruptedException {
 
+		int i = 1;
+		while (i <= 3) {
+			clickButtonXpath(".//*[@id='page-next']");
+			Thread.sleep(3000);
+			i++;
+		}
 		while (!chooseRanDomDateOneTable()) {
 			clickButtonXpath(".//*[@id='page-next']");
 			Thread.sleep(3000);
@@ -363,10 +369,8 @@ public class YukataReantalTest {
 		if (!seLectShop(shopname))
 			return false;
 		Thread.sleep(3000);
-		// chooseRanDomDate();
-		clickButtonXpath(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[13]/td[5]/div");
-		indcFirstSelectedDate = 5;
-		indrFirstSelectedDate = 13;
+		
+		chooseRanDomDate();
 		return true;
 
 	}

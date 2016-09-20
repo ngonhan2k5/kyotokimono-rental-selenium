@@ -63,8 +63,8 @@ public class CheckBookingKimonoEmulatorDevice {
 
 		numPerson = 19;
 
-		 nameShop = "kyoto";
-		// nameShop = "gionshijo";
+		// nameShop = "kyoto";
+		 nameShop = "gionshijo";
 		// nameShop = "osaka";
 		//nameShop = "tokyo";
 

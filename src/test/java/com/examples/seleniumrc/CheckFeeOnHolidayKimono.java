@@ -25,7 +25,10 @@ public class CheckFeeOnHolidayKimono {
 			"2017/02/11", "2017/03/20", "2017/04/29", "2017/05/03", "2017/05/04", "2017/05/05", "2017/07/17",
 			"2017/09/18", "2017/09/23", "2017/10/09", "2017/11/03", "2017/11/23", "2017/12/23"));
 	List listIdKimono = new ArrayList(
-			Arrays.asList("1", "2", "26", "3", "39", "35", "36", "4", "6", "7", "37", "8", "40"));
+			Arrays.asList(//"1",
+					//"2",
+					//"26",
+					"3", "39", "35", "36", "4", "6", "7", "37", "8", "40"));
 
 	@Before
 	public void setUp() throws Exception {
@@ -85,7 +88,7 @@ public class CheckFeeOnHolidayKimono {
 	public void checkDressHolidayFee(List L) throws InterruptedException {
 		for (int i = 0; i < L.size(); i++) {
 			// click tab kimono
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			findCss(".kimono").click();
 			Thread.sleep(500);
 			
@@ -95,7 +98,7 @@ public class CheckFeeOnHolidayKimono {
 
 			// click next button
 			clickButtonCss("#add_plan");
-			waitForPageLoaded(driver.getCurrentUrl());
+			Thread.sleep(3000);
 
 			seLectShop(nameShop);
 			Thread.sleep(3000);
@@ -361,7 +364,7 @@ public class CheckFeeOnHolidayKimono {
 
 	public void backAndAssertMessage() throws InterruptedException {
 		// click back button
-		findCss("#booking_back").click();
+		findCss("#booking_back").click(); 
 		// assert message
 
 		assertNumberPerson();

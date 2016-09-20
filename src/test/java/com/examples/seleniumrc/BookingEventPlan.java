@@ -137,7 +137,7 @@ public class BookingEventPlan {
 		// nameShop = "gionshio";
 		// nameShop = "osaka";
 		// nameShop = "tokyo";
-		chooseShopAndDress(nameShop, 15);// a is a first dress in list
+		chooseShopAndDress(nameShop, 16);// a is a first dress in list
 		Thread.sleep(2000);
 
 	}
@@ -482,14 +482,14 @@ public class BookingEventPlan {
 	}
 
 	public void checkpricedress() throws InterruptedException {
-		String getNomalPriceDress = findCss(".price-small").getText().replace("￥", "").replace(",", "")
-				.replace("(税抜)", "").trim();
+//		String getNomalPriceDress = findCss(".price-small").getText().replace("￥", "").replace(",", "")
+//				.replace("(税抜)", "").trim();
 		String getDiscountPriceDress = findCss(".price-sale").getText().replace("￥", "").replace(",", "")
 				.replace("(税抜)", "").trim();
-		System.out.println(getNomalPriceDress);
+//		System.out.println(getNomalPriceDress);
 		System.out.println(getDiscountPriceDress);
-		Assert.assertEquals("Fail-check nomal price dress ", Boolean.TRUE,
-				getNomalPriceDress.equals(Integer.toString(normalpricedress)));
+//		Assert.assertEquals("Fail-check nomal price dress ", Boolean.TRUE,
+//				getNomalPriceDress.equals(Integer.toString(normalpricedress)));
 		Assert.assertEquals("Fail-check sale price dress ", Boolean.TRUE,
 				getDiscountPriceDress.equals(Integer.toString(salepricedress)));
 
@@ -526,20 +526,20 @@ public class BookingEventPlan {
 
 		// get id dress
 		iddress = findCss(".list.dp-flex li:nth-child(" + Integer.toString(indexdress) + ") img").getAttribute("p_id");
-		dressName = findCss(".list.dp-flex li:nth-child(" + Integer.toString(indexdress) + ") .product-name").getText()
+		dressName = findCss(".list.dp-flex li:nth-child(" + Integer.toString(indexdress) + ") a:nth-child(2)").getText()
 				.replace("\n", "");
 		optionBookingList.add(dressName);
 
 		// get price dress
-		normalpricedress = Integer.parseInt(findCss(" li:nth-child(" + indexdress + ") .price-small a").getText()
+		normalpricedress = Integer.parseInt(findCss(" li:nth-child(" + indexdress + ") .price a").getText()
 				.replace(",", "").replace("円", ""));
-		String saleprice = findCss(" li:nth-child(" + indexdress + ") .price-sale a").getText().replace("\n", "")
+		String saleprice = findCss(" li:nth-child(" + indexdress + ") .price a").getText().replace("\n", "")
 				.replace(",", "").replace("円", "");
 		optionBookingList.add(saleprice);
 		salepricedress = Integer.parseInt(saleprice);
 
 		totalPrice += salepricedress;
-		clickButtonCss("li:nth-child(" + Integer.toString(indexdress) + ") .btn-link");
+		clickButtonCss("li:nth-child(" + Integer.toString(indexdress) + ") img");
 
 	}
 
@@ -695,7 +695,7 @@ public class BookingEventPlan {
 	public void chooseRanDomDate() throws InterruptedException {
 
 		int dem = 0;
-		while (dem <= 17) {
+		while (dem <= 16) {
 			dem++;
 			clickButtonXpath(".//*[@id='page-next']");
 			Thread.sleep(3000);

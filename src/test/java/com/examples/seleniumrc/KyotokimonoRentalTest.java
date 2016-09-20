@@ -62,15 +62,15 @@ public class KyotokimonoRentalTest {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		numPerson = 2;
+		numPerson =11;
 
 		// shopName = "kyoto";
 		// shopName = "gionshijo";
 		// shopName = "osaka";
-		//shopName = "tokyo";
+		shopName = "tokyo";
 
 		// shopName = "kamakura";
-		 shopName = "kinkakuji";
+		// shopName = "kinkakuji";
 		// shopName = "shinkyogoku";
 		// shopName = "kiyomizuzaka";
 
@@ -854,13 +854,13 @@ public class KyotokimonoRentalTest {
 			return -1;
 		}
 		// get and compare with total price after tax of price
-		sum_price_after_tax = (int) (sum_price * 1.08);
+		sum_price_after_tax = (int) Math.round((double) (sum_price * 1.08));
 		taxpr = findCss("#total_cost_tax").getText();
 		taxpr = taxpr.replace("￥", "");
 		taxpr = taxpr.replace(",", "");
 		price_after_tax = Integer.parseInt(taxpr);
 		if (sum_price_after_tax != price_after_tax) {
-			System.out.println("Price after tax is wrong");
+			System.out.println("Total Price after tax is wrong");
 			return -1;
 		}
 		// price after pay for web
