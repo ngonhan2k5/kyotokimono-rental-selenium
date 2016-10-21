@@ -49,7 +49,7 @@ public class CheckNameAndPriceKimono {
 	@Test
 	public void checkMain() throws InterruptedException {
 
-		System.out.println("*************************checknameandpriceYukata***************************");
+		System.out.println("*************************checknameandpricekimono***************************");
 		for (int i = 1; i <= listIdKimono.size(); i++) {
 			String a = Integer.toString(i);
 			String b = (String) listIdKimono.get(i - 1);
@@ -71,10 +71,10 @@ public class CheckNameAndPriceKimono {
 			String idpriceweb, String orderdress) throws InterruptedException {
 		String namedress, namedress_page2, price, price_page2, pricepayweb, pricepayweb_page2;
 
-		// click tab kimono
-		waitFindCssElementLoaded(".kimono");
-		findCss(".kimono").click();
-		Thread.sleep(500);
+//		// click tab kimono
+//		waitFindCssElementLoaded(".kimono");
+//		findCss(".kimono").click();
+		Thread.sleep(1000);
 
 		namedress = findCss(idnamedress).getText().replace("♥", "").replace("\n", "");
 		price = getPriceKimono(idprice);

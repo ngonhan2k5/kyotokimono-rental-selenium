@@ -24,11 +24,21 @@ public class CheckFeeOnHolidayKimono {
 			"2016/10/10", "2016/11/03", "2016/11/23", "2016/12/23", "2017/01/01", "2017/01/02", "2017/01/09",
 			"2017/02/11", "2017/03/20", "2017/04/29", "2017/05/03", "2017/05/04", "2017/05/05", "2017/07/17",
 			"2017/09/18", "2017/09/23", "2017/10/09", "2017/11/03", "2017/11/23", "2017/12/23"));
+	@SuppressWarnings("unchecked")
 	List listIdKimono = new ArrayList(
-			Arrays.asList(//"1",
-					//"2",
-					//"26",
-					"3", "39", "35", "36", "4", "6", "7", "37", "8", "40"));
+			Arrays.asList("1",
+					"2",
+					"26",
+					"3",
+					"39",
+					"35",
+					"36",
+					"4",
+					"6",
+					"7",
+					"37",
+					"8",
+					"40"));
 
 	@Before
 	public void setUp() throws Exception {
@@ -67,7 +77,7 @@ public class CheckFeeOnHolidayKimono {
 
 		numPerson = 1;
 
-		 nameShop = "kyoto";
+		// nameShop = "kyoto";
 		// nameShop = "gionshijo";
 		// nameShop = "osaka";
 		//nameShop = "tokyo";
@@ -76,7 +86,7 @@ public class CheckFeeOnHolidayKimono {
 		// nameShop = "kinkakuji";
 		// nameShop = "shinkyogoku";
 		// nameShop = "kiyomizuzaka";
-
+		nameShop="kanazawa";
 		
 		checkDressHolidayFee(listIdKimono);
 
@@ -87,10 +97,10 @@ public class CheckFeeOnHolidayKimono {
 
 	public void checkDressHolidayFee(List L) throws InterruptedException {
 		for (int i = 0; i < L.size(); i++) {
-			// click tab kimono
-			Thread.sleep(3000);
-			findCss(".kimono").click();
-			Thread.sleep(500);
+//			// click tab kimono
+//			Thread.sleep(3000);
+//			findCss(".kimono").click();
+//			Thread.sleep(500);
 			
 			String idplan = (String) L.get(i);
 			seLectNumberPerson(numPerson, idplan);
@@ -269,8 +279,8 @@ public class CheckFeeOnHolidayKimono {
 				}
 				String xpathcell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(i) + "]"
 						+ "/td[" + Integer.toString(j) + "]";
-				clickButtonXpath(xpathcell);
-				assertDate();
+				//clickButtonXpath(xpathcell);
+				//assertDate();
 				if (checkWeekend(i, j) || checkHoliday(i, j)) {
 					xpathcell += "/div/div";
 					String textcell = findXpath(xpathcell).getText();
@@ -307,8 +317,10 @@ public class CheckFeeOnHolidayKimono {
 	// Click another week if have not select a date whole table
 	public void checkFeeDateTable() throws InterruptedException {
 
+		clickButtonXpath(".//*[@id='page-next']");
+		Thread.sleep(3000);
 		int i = 1;
-		while (i <= 72 && checkFeeOneDateTable()) {
+		while (i <= 65 && checkFeeOneDateTable()) {
 			i++;
 			clickButtonXpath(".//*[@id='page-next']");
 			Thread.sleep(3000);
@@ -345,6 +357,10 @@ public class CheckFeeOnHolidayKimono {
 			clickButtonCss("#choose-shop label[for='id-9-down']");
 			return true;
 		}
+		else if (shopname.equals("kanazawa")) {
+		clickButtonCss("#choose-shop label[for='id-10-down']");
+		return true;
+	}
 
 		return false;
 

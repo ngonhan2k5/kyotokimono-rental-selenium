@@ -1,6 +1,7 @@
 package com.examples.seleniumrc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,15 +40,17 @@ public class CheckBookingKimonoEmulatorDevice {
 	String totalPriceBooking, totalprice_detail, totalPriceBooking_payweb, totalprice_detail_payweb,
 			totalPriceBooking_tax, totalprice_detail_tax, totalPriceBooking_tax_web, totalprice_detail_tax_web;
 	int totalprice;
+	String idPlan;
+	List listIdKimono = new ArrayList(
+			Arrays.asList("1", "2", "26", "3", "39", "35", "36", "4", "82", "83", "6", "7", "37", "8", "40"));
 
 	@Before
 	public void setUp() throws Exception {
 
-	//	setupEmuatorDevice("Apple iPhone 4");
-	//setupEmuatorDevice("Apple iPhone 5");
-	//	setupEmuatorDevice("Apple iPhone 6");
-	setupEmuatorDevice("Apple iPhone 6 Plus");
-	
+		// setupEmuatorDevice("Apple iPhone 4");
+		// setupEmuatorDevice("Apple iPhone 5");
+		// setupEmuatorDevice("Apple iPhone 6");
+		setupEmuatorDevice("Apple iPhone 6 Plus");
 
 	}
 
@@ -61,24 +64,47 @@ public class CheckBookingKimonoEmulatorDevice {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		numPerson = 19;
+		numPerson = 2;
 
-		// nameShop = "kyoto";
-		 nameShop = "gionshijo";
+		//nameShop = "kyoto";
+
+		// nameShop = "gionshijo";
 		// nameShop = "osaka";
-		//nameShop = "tokyo";
+		 nameShop = "tokyo";
 
 		// nameShop = "kamakura";
 		// nameShop = "kinkakuji";
 		// nameShop = "shinkyogoku";
 		// nameShop = "kiyomizuzaka";
+		// nameShop = "kanazawa";
 
 		// click tab kimono
-		findCss(".kimono").click();
-		waitForPageLoaded();
+		// findCss(".kimono").click();
+		// waitForPageLoaded();
 
+		// choose plan i
+		idPlan = (String) listIdKimono.get(5);
 		// select people
-		seLectNumberPerson(numPerson);
+		seLectNumberPerson();
+		coupleIsDouble();
+		System.out.println("num="+numPerson);
+
+
+		bookingAndCheck();
+
+		System.out
+				.println("***************************************end test********************************************");
+
+	}
+
+	public void coupleIsDouble() throws InterruptedException {
+		if (idPlan.equals("6") || idPlan.equals("7") || idPlan.equals("37") || idPlan.equals("8")
+				|| idPlan.equals("40")) {
+			numPerson *= 2;
+		}
+	}
+
+	public void bookingAndCheck() throws InterruptedException {
 
 		// click next button
 		clickButtonCss("#add_plan");
@@ -123,9 +149,6 @@ public class CheckBookingKimonoEmulatorDevice {
 		getAndCheckOptionDetailList();
 		// check information of customer based on list booking and total price
 		checkInfoCustomer();
-		System.out
-				.println("***************************************end test********************************************");
-
 	}
 
 	public void setupEmuatorDevice(String device) throws InterruptedException {
@@ -245,12 +268,11 @@ public class CheckBookingKimonoEmulatorDevice {
 	}
 
 	// select a number person with argument
-	public void seLectNumberPerson(int number) throws InterruptedException {
+	public void seLectNumberPerson() throws InterruptedException {
 
-		clickButtonXpath(".//*[@id='list_plans_1']");
+		clickButtonXpath(".//*[@id='list_plans_" + idPlan + "']");
 		Thread.sleep(200);
-		number++;
-		clickButtonXpath(".//*[@id='list_plans_1']/option[" + Integer.toString(number) + "]");
+		clickButtonXpath(".//*[@id='list_plans_" + idPlan + "']/option[" + Integer.toString(numPerson+1) + "]");
 		Thread.sleep(500);
 	}
 
@@ -383,6 +405,10 @@ public class CheckBookingKimonoEmulatorDevice {
 		} else if (shopname.equals("kamakura")) {
 			clickButtonCss("#choose-shop label[for='id-9-down']");
 			return true;
+
+		} else if (shopname.equals("kanazawa")) {
+			clickButtonCss("#choose-shop label[for='id-10-down']");
+			return true;
 		}
 
 		return false;
@@ -425,47 +451,58 @@ public class CheckBookingKimonoEmulatorDevice {
 
 			scrollAndClickCSS("label[for='choose_later_" + Integer.toString(i) + "']", 0);
 			Thread.sleep(200);
-			scrollAndClickCSS("[for='plans[1][persons][" + Integer.toString(i - 1) + "][options][24]']", 0);
+			scrollAndClickCSS("[for='plans[" + idPlan + "][persons][" + Integer.toString(i - 1) + "][options][24]']",
+					0);
 			Thread.sleep(200);
 
 		}
-//
-//		// choose photo table 1
+		//
+		// // choose photo table 1
 		scrollAndClickCSS("[for='checkbox-control-all']", 0);
-//		Select dropdownbox58 = new Select(driver.findElement(By.cssSelector("[name='book_options[58]']")));
-//		dropdownbox58.selectByIndex(1);
+		// Select dropdownbox58 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[58]']")));
+		// dropdownbox58.selectByIndex(1);
 		Thread.sleep(200);
 		// choose photo table 2
-		
+
 		Select dropdownbox59 = new Select(driver.findElement(By.cssSelector("[name='book_options[59]']")));
 		dropdownbox59.selectByIndex(2);
-	
+
 		Select dropdownbox60 = new Select(driver.findElement(By.cssSelector("[name='book_options[60]']")));
 		dropdownbox60.selectByIndex(2);
-	
-//		Select dropdownbox61 = new Select(driver.findElement(By.cssSelector("[name='book_options[61]']")));
-//		dropdownbox61.selectByIndex(2);
-		//choose photo table 3
-		//scrollAndClickCSS("[for='checkbox-control-group-15']", 0);
-//		Select dropdownbox62 = new Select(driver.findElement(By.cssSelector("[name='book_options[62]']")));
-//		dropdownbox62.selectByIndex(2);
-//		Select dropdownbox63 = new Select(driver.findElement(By.cssSelector("[name='book_options[63]']")));
-//		dropdownbox63.selectByIndex(3);
-//		Select dropdownbox64 = new Select(driver.findElement(By.cssSelector("[name='book_options[64]']")));
-//		dropdownbox64.selectByIndex(6);
-//		Thread.sleep(200);
-//		// choosephoto table 4
-//		scrollAndClickCSS("[for='checkbox-control-group-16']", 0);
-//		Select dropdownbox65 = new Select(driver.findElement(By.cssSelector("[name='book_options[65]']")));
-//		dropdownbox65.selectByIndex(8);
-//		Select dropdownbox66 = new Select(driver.findElement(By.cssSelector("[name='book_options[66]']")));
-//		dropdownbox66.selectByIndex(8);
-//		Select dropdownbox67 = new Select(driver.findElement(By.cssSelector("[name='book_options[67]']")));
-//		dropdownbox67.selectByIndex(8);
-//		Select dropdownbox68 = new Select(driver.findElement(By.cssSelector("[name='book_options[68]']")));
-//		dropdownbox68.selectByIndex(8);
-//		Select dropdownbox69 = new Select(driver.findElement(By.cssSelector("[name='book_options[69]']")));
-//		dropdownbox69.selectByIndex(8);
+
+		// Select dropdownbox61 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[61]']")));
+		// dropdownbox61.selectByIndex(2);
+		// choose photo table 3
+		// scrollAndClickCSS("[for='checkbox-control-group-15']", 0);
+		// Select dropdownbox62 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[62]']")));
+		// dropdownbox62.selectByIndex(2);
+		// Select dropdownbox63 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[63]']")));
+		// dropdownbox63.selectByIndex(3);
+		// Select dropdownbox64 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[64]']")));
+		// dropdownbox64.selectByIndex(6);
+		// Thread.sleep(200);
+		// // choosephoto table 4
+		// scrollAndClickCSS("[for='checkbox-control-group-16']", 0);
+		// Select dropdownbox65 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[65]']")));
+		// dropdownbox65.selectByIndex(8);
+		// Select dropdownbox66 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[66]']")));
+		// dropdownbox66.selectByIndex(8);
+		// Select dropdownbox67 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[67]']")));
+		// dropdownbox67.selectByIndex(8);
+		// Select dropdownbox68 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[68]']")));
+		// dropdownbox68.selectByIndex(8);
+		// Select dropdownbox69 = new
+		// Select(driver.findElement(By.cssSelector("[name='book_options[69]']")));
+		// dropdownbox69.selectByIndex(8);
 
 	}
 
@@ -503,19 +540,27 @@ public class CheckBookingKimonoEmulatorDevice {
 		String a;
 		int sum = 0, SumTotal = 0;
 		a = Integer.toString(Locationperson);
+		// count option cell
+		int optionTable1 = getRowTableByCSS(
+				"#plans_" + idPlan + "_persons_" + a + " .person_detail .group-option.group-option-2 li");
+		int optionTable2 = getRowTableByCSS(
+				"#plans_" + idPlan + "_persons_" + a + " .person_detail .group-option.group-option-3 li");
+		int optionTable3 = getRowTableByCSS(
+				"#plans_" + idPlan + "_persons_" + a + " .person_detail .group-option.group-option-4 li");
+		int optionTable4 = getRowTableByCSS(
+				"#plans_" + idPlan + "_persons_" + a + " .person_detail .group-option.group-option-5 li");
 
 		sum = sum
-				+ getTotalPriceTableOption(
-						"#plans_1_persons_" +a+ " ul:nth-child(1) li:nth-child(", 3, 5)
-				+ getTotalPriceTableOption(
-						"#plans_1_persons_" + a + " ul:nth-child(2) li:nth-child(", 2, 4)
-				+ getTotalPriceTableOption(
-						"#plans_1_persons_" +a + " ul:nth-child(3) li:nth-child(", 2, 3)
-				+ getTotalPriceTableOption(
-						"#plans_1_persons_" +a + " ul:nth-child(4) li:nth-child(", 2,
-						10);
+				+ getTotalPriceTableOption("#plans_" + idPlan + "_persons_" + a
+						+ " .person_detail .group-option.group-option-2 li:nth-child(", 3, optionTable1)
+				+ getTotalPriceTableOption("#plans_" + idPlan + "_persons_" + a
+						+ " .person_detail .group-option.group-option-3 li:nth-child(", 2, optionTable2)
+				+ getTotalPriceTableOption("#plans_" + idPlan + "_persons_" + a
+						+ " .person_detail .group-option.group-option-4 li:nth-child(", 2, optionTable3)
+				+ getTotalPriceTableOption("#plans_" + idPlan + "_persons_" + a
+						+ " .person_detail .group-option.group-option-5 li:nth-child(", 2, optionTable4);
 
-		SumTotal = getPriceTableOption("#plans_1_persons_" + a + " #option_cost");
+		SumTotal = getPriceTableOption("#plans_" + idPlan + "_persons_" + a + " #option_cost");
 		System.out.println("Get price of option table of person " + Locationperson + "=" + sum);
 		if (sum == SumTotal) {
 			return true;
@@ -574,11 +619,21 @@ public class CheckBookingKimonoEmulatorDevice {
 	public Boolean checkPricePhotoTable() throws InterruptedException {
 
 		int sum_photo = 0, sum;
+		int optionPhotoTable1 = getRowTableByCSS("#book-option-list-group div:nth-child(1) li");
+		int optionPhotoTable2 = getRowTableByCSS("#book-option-list-group div:nth-child(2) li");
+		int optionPhotoTable3 = getRowTableByCSS("#book-option-list-group div:nth-child(3) li");
+		int optionPhotoTable4 = getRowTableByCSS("#book-option-list-group div:nth-child(4) li") - 1;// the
+																									// last
+																									// is
+																									// not
+																									// check
+																									// box
 
-		sum_photo = sum_photo + getPricePhoto("#book-option-list-group div:nth-child(1)  li:nth-child(", 2, 2)
-				+ getPricePhoto("#book-option-list-group div:nth-child(2)  li:nth-child(", 2, 4)
-				+ getPricePhoto("#book-option-list-group div:nth-child(3)  li:nth-child(", 2, 4)
-				+ getPricePhoto("#book-option-list-group div:nth-child(4)  li:nth-child(", 2, 6);
+		sum_photo = sum_photo
+				+ getPricePhoto("#book-option-list-group div:nth-child(1)  li:nth-child(", 2, optionPhotoTable1)
+				+ getPricePhoto("#book-option-list-group div:nth-child(2)  li:nth-child(", 2, optionPhotoTable2)
+				+ getPricePhoto("#book-option-list-group div:nth-child(3)  li:nth-child(", 2, optionPhotoTable3)
+				+ getPricePhoto("#book-option-list-group div:nth-child(4)  li:nth-child(", 2, optionPhotoTable4);
 
 		sum = Integer.parseInt(findCss("#book_option_cost").getAttribute("data-value"));
 		System.out.println("Get price of photo table =" + sum_photo);
@@ -594,6 +649,13 @@ public class CheckBookingKimonoEmulatorDevice {
 		List<WebElement> rows = driver.findElements(By.xpath(s));
 		int r = rows.size() - 1;// because it add a last row that is finished
 								// head tag
+		return r;
+	}
+
+	public int getRowTableByCSS(String s) throws InterruptedException {
+		List<WebElement> rows = driver.findElements(By.cssSelector(s));
+		int r = rows.size();// because it add a last row that is finished
+							// head tag
 		return r;
 	}
 
@@ -741,6 +803,7 @@ public class CheckBookingKimonoEmulatorDevice {
 			if (!checkMessageEarlyPriceDate(price_cell, text_price_message))
 				return false;
 			getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
+			System.out.println("message: " + getted_message);
 			if (getted_message.equals(text_message)) {
 				numEarlyDiscount += num_cell;
 				System.out.println(getted_message);
@@ -755,6 +818,7 @@ public class CheckBookingKimonoEmulatorDevice {
 				if (!checkMessageDiscountPriceDate(price_cell, text_price_message))
 					return false;
 				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
+				System.out.println("message: " + getted_message);
 				if (getted_message.equals(text_message)) {
 					numEarlyDiscount += num_cell;
 					System.out.println(getted_message);
@@ -763,7 +827,9 @@ public class CheckBookingKimonoEmulatorDevice {
 				}
 
 			} else {
+				System.out.println("cêll" + num_cell);
 				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します";
+				System.out.println("message: " + getted_message);
 				if (getted_message.equals(text_message)) {
 					System.out.println(getted_message);
 					return true;
@@ -788,7 +854,7 @@ public class CheckBookingKimonoEmulatorDevice {
 		}
 
 		if (!checkOneMessageDateTable(xpath_cell, text_message, text_price_message, num, pr)) {
-			System.out.println("Message date " + li_message + " is wrong");
+			System.out.println("Message date " + li_message + " is wrong" + "\n");
 			return false;
 		}
 
@@ -796,7 +862,16 @@ public class CheckBookingKimonoEmulatorDevice {
 
 	}
 
-	public Boolean checkMessageDateTable() throws InterruptedException {
+	public boolean checkMessageDateTable() throws InterruptedException {
+		if (!idPlan.equals('5') || !idPlan.equals('6')) {
+			checkMessageDatePlanHafthour();
+		} else
+			checkMessageDatePlanReserve1Hour();
+
+		return true;
+	}
+
+	public Boolean checkMessageDatePlanHafthour() throws InterruptedException {
 		int count_cell, num_cell, num_lost = 0, li_message = 1, pr = 0;
 		String xpath_cell, text_message = "", text_price_message = "";
 		count_cell = getSelectedCellDateTable();
@@ -823,7 +898,8 @@ public class CheckBookingKimonoEmulatorDevice {
 			if (getAttributeElement(xpath_cell, "class").equals("thead")) {
 				continue;
 			}
-			if ("hour selected".equals(getAttributeElement(
+			if ("hour selected".equals(getAttributeElement(// except in case
+															// x,-,phone
 					xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]" + "/div", "class"))) {
 				num_cell = Integer.parseInt(
 						findXpath((xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]/div/div/span"))
@@ -848,6 +924,48 @@ public class CheckBookingKimonoEmulatorDevice {
 		System.out.println("--------------End message date table--------------");
 		return true;
 
+	}
+
+	public void checkMessageDatePlanReserve1Hour() throws InterruptedException {
+		String xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr["
+				+ Integer.toString(indrFirstSelectedDate) + "]";
+		int idHeadCell = indcFirstSelectedDate;
+		int idLastCell = indcFirstSelectedDate + 1;
+		int numHeadCell = Integer.parseInt(findXpath((xpath_cell + "/td[" + idHeadCell + "]/div/div/span")).getText());
+		int numLastCell = Integer.parseInt(findXpath((xpath_cell + "/td[" + idLastCell + "]/div/div/span")).getText());
+		;
+		int lost = numPerson, pr = 0;
+		String text_message = "", text_price_message = "";
+		int count_cell = getSelectedCellDateTable();
+		int min, li_message = 1;
+		for (int i = indrFirstSelectedDate;; i++) {
+			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(i) + "]";
+			if (getAttributeElement(xpath_cell, "class").equals("thead")) {
+				continue;
+			}
+
+			if ("hour selected".equals(getAttributeElement(// except in case
+															// x,-,phone
+					xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]" + "/div", "class"))) {
+
+				min = Math.min(lost, Math.min(numHeadCell, numLastCell));
+				getCheckOneMessageDateTable(xpath_cell, text_message, text_price_message, min, pr, li_message);
+
+				lost -= min;
+				numLastCell -= min;
+				if (lost == 0)
+					return;
+				if (numLastCell == 0) {
+					idHeadCell += 2;
+					idLastCell += 2;
+				} else {
+					idHeadCell = idLastCell;
+					idLastCell++;
+				}
+				li_message++;
+
+			}
+		}
 	}
 
 	public void inputCustomerInfomation() throws InterruptedException {
@@ -886,16 +1004,15 @@ public class CheckBookingKimonoEmulatorDevice {
 		String taxpr;
 		for (int i = 0; i < numPerson; i++) {
 			// check total of 1 person
-			sum_price_1_person = Integer.parseInt(
-					driver.findElement(By.cssSelector("#plans_1_persons_" + Integer.toString(i) + " #option_cost"))
-							.getAttribute("data-value"))
-					+ priceDress;
+			sum_price_1_person = Integer.parseInt(driver
+					.findElement(
+							By.cssSelector("#plans_" + idPlan + "_persons_" + Integer.toString(i) + " #option_cost"))
+					.getAttribute("data-value")) + priceDress;
 			Assert.assertEquals("[FAIL]:check total price of person" + i, Boolean.TRUE,
-					sum_price_1_person == Integer
-							.parseInt(driver
-									.findElement(By
-											.cssSelector("#plans_1_persons_" + Integer.toString(i) + " #person_amount"))
-									.getAttribute("data-value")));
+					sum_price_1_person == Integer.parseInt(driver
+							.findElement(By.cssSelector(
+									"#plans_" + idPlan + "_persons_" + Integer.toString(i) + " #person_amount"))
+							.getAttribute("data-value")));
 
 			// add total price of 1 person
 			sum_price += sum_price_1_person;
@@ -933,7 +1050,7 @@ public class CheckBookingKimonoEmulatorDevice {
 		Assert.assertEquals("[FAIL]:check total price pay web booking", Boolean.TRUE,
 				totalpriceweb == (Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value"))));
 		// check price tax pay web
-		int  totalpricewebtax =(int) Math.round((double) (totalpriceweb * 1.08));
+		int totalpricewebtax = (int) Math.round((double) (totalpriceweb * 1.08));
 		String ttpricetax = findCss("#total_cost_reduced_tax").getText();
 		ttpricetax = ttpricetax.replace("￥", "");
 		ttpricetax = ttpricetax.replace(",", "");
@@ -947,7 +1064,7 @@ public class CheckBookingKimonoEmulatorDevice {
 	}
 
 	public Boolean getRowOptionDetailOnePerson(int order_person) throws InterruptedException {
-		String s = "#plans_1_persons_" + Integer.toString(order_person) + " .clearfix.option-list p";
+		String s = "#plans_" + idPlan + "_persons_" + Integer.toString(order_person) + " .clearfix.option-list p";
 		List<WebElement> rowoptions = driver.findElements(By.cssSelector(s));
 		int r = rowoptions.size();
 		String info;
@@ -984,7 +1101,7 @@ public class CheckBookingKimonoEmulatorDevice {
 		for (int i = 0; i < numPerson; i++) {
 			getRowOptionDetailOnePerson(i);
 		}
-		
+
 		// get photo option
 		for (int i = 1; i <= 4; i++) {
 			getRowphotoDetailOneTable(i);
@@ -1064,48 +1181,46 @@ public class CheckBookingKimonoEmulatorDevice {
 		namecus_detail = findCss(" .form li:nth-child(1) div:nth-child(2)").getText().trim();
 		emailcus_detail = findCss(" .form li:nth-child(3) div:nth-child(2)").getText().trim();
 		phonecus_detail = findCss(" .form li:nth-child(4) div:nth-child(2)").getText().trim();
-		postcode_detail =  findCss(" .form li:nth-child(5) div:nth-child(2)").getText().trim();
+		postcode_detail = findCss(" .form li:nth-child(5) div:nth-child(2)").getText().trim();
 		addresscus_detail = findCss(" .form li:nth-child(6) div:nth-child(2)").getText().trim();
-		birthcus_detail =  findCss(" .form li:nth-child(7) div:nth-child(2)").getText().trim();
+		birthcus_detail = findCss(" .form li:nth-child(7) div:nth-child(2)").getText().trim();
 
 		totalprice_detail = findXpath(".//*[@id='total_cost']").getText().trim();
 		totalprice_detail_payweb = findXpath(".//*[@id='total_cost_reduced']").getText().trim();
 		totalprice_detail_tax = findXpath(".//*[@id='total_cost_tax']").getText().trim();
 		totalprice_detail_tax_web = findXpath(".//*[@id='total_cost_reduced_tax']").getText().trim();
 
-		Assert.assertEquals("[FAIL:check date booking on detail page", Boolean.TRUE,
-				dateBooking.equals(date_detail));
+		Assert.assertEquals("[FAIL:check date booking on detail page", Boolean.TRUE, dateBooking.equals(date_detail));
 		String num = Integer.toString(numPerson) + " 名様";
-		
+
 		Assert.assertEquals("[FAIL:check number of customer in detail page", Boolean.TRUE,
 				num.equals(numPerson_detail));
-	
-		Assert.assertEquals("[FAIL:check shop name in detail page", Boolean.TRUE,
-				shopName.equals(shopname_detail));
+
+		Assert.assertEquals("[FAIL:check shop name in detail page", Boolean.TRUE, shopName.equals(shopname_detail));
 		if (earlyDiscountFee != 0) {
-		
+
 			Assert.assertEquals("[FAIL:check fee early or discount  in detail page", Boolean.TRUE,
 					feeEarlyDiscount.equals(fee_detail));
-		}		
-		
+		}
+
 		Assert.assertEquals("[FAIL:check name of customer  in detail page", Boolean.TRUE,
 				nameCustomer.equals(namecus_detail));
-	
+
 		Assert.assertEquals("[FAIL:check email customer  in detail page", Boolean.TRUE,
 				emailCustomer.equals(emailcus_detail));
-		
+
 		Assert.assertEquals("[FAIL:check phone number of customer  in detail page", Boolean.TRUE,
 				phoneCustomer.equals(phonecus_detail));
-		
+
 		Assert.assertEquals("[FAIL:checkpostcode of customer  in detail page", Boolean.TRUE,
 				postercodeCustomer.equals(postcode_detail));
-		
+
 		Assert.assertEquals("[FAIL:address of customer  in detail page", Boolean.TRUE,
 				addressCustomer.equals(addresscus_detail));
-		
+
 		Assert.assertEquals("[FAIL:checkpostcode of customer  in detail page", Boolean.TRUE,
 				postercodeCustomer.equals(postcode_detail));
-	
+
 		Assert.assertEquals("[FAIL:birthday of customer  in detail page", Boolean.TRUE,
 				birthCustomer.equals(birthcus_detail));
 
@@ -1114,13 +1229,13 @@ public class CheckBookingKimonoEmulatorDevice {
 
 		Assert.assertEquals("[FAIL:check total price  in detail page", Boolean.TRUE,
 				totalPriceBooking.equals(totalprice_detail));
-		
+
 		Assert.assertEquals("[FAIL:check total price payment   in detail page", Boolean.TRUE,
 				totalPriceBooking_payweb.equals(totalprice_detail_payweb));
-		
+
 		Assert.assertEquals("[FAIL:check total price tax  in detail page", Boolean.TRUE,
 				totalPriceBooking_tax.equals(totalprice_detail_tax));
-		
+
 		Assert.assertEquals("[FAIL:checktotal price tax pay for web  in detail page", Boolean.TRUE,
 				totalPriceBooking_tax_web.equals(totalprice_detail_tax_web));
 

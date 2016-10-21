@@ -26,7 +26,15 @@ public class CheckFeeOnHolidayYukata {
 			"2017/09/18", "2017/09/23", "2017/10/09", "2017/11/03", "2017/11/23", "2017/12/23"));
 
 	List listIdYukata = new ArrayList(
-			Arrays.asList("12", "13", "14", "15", "79", "16", "18", "17", "20", "21", "22", "23"));
+			Arrays.asList(//"12",
+					//"13",
+					//"14",
+					//"15",
+					//"79",
+					//"16",
+					//"18",
+					//"17",
+					"20", "21", "22", "23"));
 
 	@Before
 	public void setUp() throws Exception {
@@ -271,7 +279,8 @@ public class CheckFeeOnHolidayYukata {
 				}
 				String xpathcell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(i) + "]"
 						+ "/td[" + Integer.toString(j) + "]";
-				clickButtonXpath(xpathcell);
+				//clickButtonXpath(xpathcell);
+				System.out.println("find and test cell "+i+"-"+j);
 				assertDate();
 				if (checkWeekend(i, j) || checkHoliday(i, j)) {
 					xpathcell += "/div/div";
