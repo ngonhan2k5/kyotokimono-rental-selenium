@@ -319,7 +319,7 @@ public class CheckBookingKimonoEmulatorDevice {
 
 				DateText = dateElement.getText();
 
-				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
+				if (DateText.contains("-")|| DateText.contains("×") || DateText.contains("☎")) {
 					// nothing
 				} else {
 
@@ -978,7 +978,7 @@ public class CheckBookingKimonoEmulatorDevice {
 		ele.sendKeys("thuy test");
 
 		ele = findXpath((".//*[@id='Book_rep_email']"));
-		ele.sendKeys("nhatthuyld@gmail.com");
+		ele.sendKeys("nhatthuywe@gmail.com");
 
 		ele = findXpath((".//*[@id='Book_rep_tel01']"));
 		ele.sendKeys("8898988787867676");

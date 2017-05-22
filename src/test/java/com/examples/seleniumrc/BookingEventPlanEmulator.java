@@ -673,7 +673,7 @@ public class BookingEventPlanEmulator {
 
 				DateText = dateElement.getText();
 
-				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
+				if (DateText.contains("-")|| DateText.contains("×") || DateText.contains("☎")) {
 					// nothing
 				} else {
 					if (alreadyClick == 0) {

@@ -645,7 +645,7 @@ public class BookingEventPlan {
 
 				DateText = dateElement.getText();
 
-				if (("-").equals(DateText) || ("×").equals(DateText) || ("☎").equals(DateText)) {
+				if (DateText.contains("-")|| DateText.contains("×") || DateText.contains("☎")) {
 					// nothing
 				} else {
 					if (alreadyClick == 20) {
