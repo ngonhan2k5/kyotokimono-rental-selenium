@@ -3,6 +3,7 @@ package com.examples.seleniumrc;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,12 @@ public class YukataReantalTest {
 	String totalPriceBooking, totalPriceDetail, totalPriceBookingPayweb, totalPriceDetailPayWeb, totalPriceBookingTax,
 			totalPriceDetailTax, totalPriceBookingTaxWeb, totalPriceDetailTaxWeb;
 	int totalprice;
+	String idPlan;
+	List listIdKimono = new ArrayList(
+			Arrays.asList("12",
+					"13",
+					"15"
+					));
 
 	@Before
 	public void setUp() throws Exception {
@@ -51,7 +58,7 @@ public class YukataReantalTest {
 		System.setProperty("webdriver.chrome.driver", driverUrl);
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
-		driver.get("https://kyotokimono-rental.com/reserve");
+		driver.get("https://kyotokimono-rental.com/reserve#yukata");
 		Thread.sleep(4000);
 
 		// press esc
@@ -82,19 +89,21 @@ public class YukataReantalTest {
 		System.out.println(
 				"*********************************Test kimono standard*******************************************");
 
-		numPerson = 2;
+		numPerson = 1;
 
-		//shopName = "kyoto";
+		shopName = "kyoto";
 		// shopName = "gionshijo";
 		// shopName = "osaka";
-		 shopName = "tokyo";
+		// shopName = "tokyo";
 
 		// shopName = "kamakura";
 		// shopName = "kinkakuji";
 		// shopName = "shinkyogoku";
 		// shopName = "kiyomizuzaka";
+		//shopName="kanazawa";
 
 		// select people
+		idPlan=(String) listIdKimono.get(0);
 		seLectNumberPerson(numPerson);
 
 		// click next button
@@ -105,8 +114,7 @@ public class YukataReantalTest {
 		// get price of dress because price dress of all person is same
 		priceDress = Integer.parseInt(getAttributeElement(".//*[@id='person_amount']", "data-value"));
 		priceDressWeb = Integer.parseInt(findCss("#total_cost_reduced").getAttribute("data-value")) / numPerson;
-		System.out.println("gia web" + priceDressWeb);
-		System.out.println("gia thuong" + priceDress);
+		
 
 		// click place and date
 		if (!seLectShopAndDate(shopName))
@@ -127,12 +135,13 @@ public class YukataReantalTest {
 		// check total price in booking page
 		totalprice = checkTotalPriceBooking();
 		if (totalprice < 0) {
-			System.out.println("[FAIL]check total price is wrong");
+			System.out.println("[FAIL]check total price is wrong: ");
 			return;
 		}
+		System.out.println("check total price...");
 		// check total price pay for web booking
 		checkTotalPricePayWebBooking();
-
+		System.out.println("check total price pay web... ");
 		// Thread.sleep(200);
 		inputCustomerInfomation();
 		// click to complete option
@@ -149,6 +158,7 @@ public class YukataReantalTest {
 		// Thread.sleep(1000);
 
 		// check information of customer based on list booking and total price
+		System.out.println("check all information of booking page and detail page...");
 		checkInfoCustomer();
 		System.out
 				.println("***************************************end test********************************************");
@@ -226,12 +236,13 @@ public class YukataReantalTest {
 	// select a number person with argument
 	public void seLectNumberPerson(int number) throws InterruptedException {
 
-		clickButtonXpath(".//*[@id='list_plans_12SelectBoxIt']/span[3]");
+		clickButtonXpath(".//*[@id='list_plans_"+idPlan+"SelectBoxItArrowContainer']");
 		Thread.sleep(200);
 		number++;
-		clickButtonXpath(".//*[@id='list_plans_12SelectBoxItOptions']/li[" + Integer.toString(number) + "]/a/span[2]");
+		clickButtonXpath(".//*[@id='list_plans_"+idPlan+"SelectBoxItOptions']/li["+Integer.toString(number)+"]/a");
 		Thread.sleep(500);
 	}
+
 
 	// get attribute by create a element and find xpath
 	public String getAttributeElement(String s, String attb) throws InterruptedException {
@@ -246,17 +257,17 @@ public class YukataReantalTest {
 		int alreadyClick = 0;
 		String DateText, parentClass, DateString;
 
-		int row = getRowTableDate(".//*[@id='choose-date']/div[2]/div/table/tbody/tr");
+		int row = getRowTableDate(".//*[@id='choose-date']/div/div/table/tbody/tr");
 
 		for (int j = 1; j <= 7; j++) {
 
-			for (int i = 1; i <= row; i++) {
-				System.out.println("finding cell row " + i + " column " + j);
+			for (int i = 3; i <= row; i++) {//i =2 because 9h30-10h Not server to choose at shop 
+				
 				indrDate = Integer.toString(i);
 				indcDate = Integer.toString(j);
 
 				// find class name of weekdays
-				parentClass = getAttributeElement(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]",
+				parentClass = getAttributeElement(".//*[@id='choose-date']/div/div/table/tbody/tr[" + indrDate + "]",
 						"class");
 				// System.out.println("tên class day:" + parentClass);
 
@@ -265,7 +276,7 @@ public class YukataReantalTest {
 					continue;// if it is that continue with i++;
 				}
 				// if not, get a DE element
-				DateString = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + indrDate + "]/td[" + indcDate
+				DateString = ".//*[@id='choose-date']/div/div/table/tbody/tr[" + indrDate + "]/td[" + indcDate
 						+ "]/div";
 
 				dateElement = findXpath(DateString + "/div");
@@ -341,6 +352,10 @@ public class YukataReantalTest {
 			clickButtonCss("#choose-shop label[for='id-9-down']");
 			return true;
 		}
+		else if (shopname.equals("kanazawa")) {
+			clickButtonCss("#choose-shop label[for='id-10-down']");
+			return true;
+		}
 
 		return false;
 
@@ -379,28 +394,29 @@ public class YukataReantalTest {
 	// kyoto voi osaka co them 1 lua chon delivery, con shop cuoi cung kamakura
 	// chi co cai photo nho xi
 	public void chooseOption(int numberperson) throws InterruptedException {
-		for (int i = 1; i <= numberperson; i++) {
-
-			driver.findElement(By.cssSelector("label[for='choose_later_" + Integer.toString(i) + "']")).click();
-			;
-			Thread.sleep(200);
-
-			clickButtonXpath(".//*[@id='plans_12_persons_" + Integer.toString(i - 1)
-					+ "']/div/div[2]/div/table/tbody/tr/td[3]/ul/li[3]/label");
-			Thread.sleep(200);
-
-		}
+//		for (int i = 1; i <= numberperson; i++) {
+//
+//			driver.findElement(By.cssSelector("label[for='choose_later_" + Integer.toString(i) + "']")).click();
+//			;
+//			Thread.sleep(200);
+//
+//			clickButtonXpath(".//*[@id='plans_"+idPlan+"_persons_" + Integer.toString(i - 1)
+//					+ "']/div/div[2]/div/table/tbody/tr/td[3]/ul/li[3]/label");
+//			Thread.sleep(200);
+//
+//		}
+		clickButtonXpath(".//*[@id='plans_"+idPlan+"_persons_0']/div/div[2]/div/table/tbody/tr/td[1]/ul/li[3]/label");
 
 		// choose photo book
 
-		clickButtonXpath(".//*[@id='book_options[60]SelectBoxItText']");
+		clickButtonXpath(".//*[@id='book_options[59]SelectBoxItText']");
 		// Thread.sleep(200);
 
-		clickButtonXpath(".//*[@id='book_options[60]SelectBoxItOptions']/li[6]/a");
+		clickButtonXpath(".//*[@id='book_options[59]SelectBoxItOptions']/li[6]/a");
 
-		// Thread.sleep(200);
-		clickButtonXpath(".//*[@id='book_options[63]SelectBoxItText']");
-		clickButtonXpath(".//*[@id='book_options[63]SelectBoxItOptions']/li[4]/a");
+//		// Thread.sleep(200);
+//		clickButtonXpath(".//*[@id='book_options[63]SelectBoxItText']");
+//		clickButtonXpath(".//*[@id='book_options[63]SelectBoxItOptions']/li[4]/a");
 
 	}
 
@@ -441,16 +457,16 @@ public class YukataReantalTest {
 
 		sum = sum
 				+ getTotalPriceTableOption(
+						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[1]/ul/li[", 3, 5)
+				+ getTotalPriceTableOption(
 						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[3]/ul/li[", 3, 5)
 				+ getTotalPriceTableOption(
-						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[5]/ul/li[", 3, 5)
+						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[5]/ul[1]/li[", 2, 3)
 				+ getTotalPriceTableOption(
-						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/ul[1]/li[", 2, 3)
-				+ getTotalPriceTableOption(
-						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/ul[2]/li[", 2, 5);
+						".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[5]/ul[2]/li[", 2, 5);
 
 		SumTotal = getPriceTableOption(
-				".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[7]/div/span");
+				".//*[@id='plans_12_persons_" + a + "']/div/div[2]/div/table/tbody/tr/td[5]/div/span");
 
 		if (sum == SumTotal) {
 			return true;
@@ -517,10 +533,10 @@ public class YukataReantalTest {
 		int sum_photo = 0, sum;
 
 		sum_photo = sum_photo
-				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div/table/tbody/tr/td[1]/ul/li[", 2, 2)
-				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div/table/tbody/tr/td[3]/ul/li[", 3, 5)
-				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div/table/tbody/tr/td[5]/ul/li[", 2, 4)
-				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div/table/tbody/tr/td[7]/ul/li[", 2, 6);
+				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div[1]/div/table/tbody/tr/td[1]/ul/li[", 2, 2)
+				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div[1]/div/table/tbody/tr/td[3]/ul/li[", 3, 5)
+				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div[1]/div/table/tbody/tr/td[5]/ul/li[", 2, 4)
+				+ getPricePhoto(".//*[@id='booking_form']/div[3]/div[2]/div[1]/div/table/tbody/tr/td[7]/ul/li[", 2, 4);
 
 		sum = Integer.parseInt(getAttributeElement(".//*[@id='book_option_cost']", "data-value"));
 		if (sum == sum_photo) {
@@ -573,7 +589,7 @@ public class YukataReantalTest {
 	// get all selected cell of date table
 	public int getSelectedCellDateTable() throws InterruptedException {
 		int count_cell = 0, i, j;
-		int row = getRowTableDate(".//*[@id='choose-date']/div[2]/div/table/tbody/tr");
+		int row = getRowTableDate(".//*[@id='choose-date']/div/div/table/tbody/tr");
 		String a, b, attclass, parentClass;
 		WebElement ele;
 
@@ -583,7 +599,7 @@ public class YukataReantalTest {
 				a = Integer.toString(i);
 				b = Integer.toString(j);
 
-				parentClass = getAttributeElement(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + a + "]",
+				parentClass = getAttributeElement(".//*[@id='choose-date']/div/div/table/tbody/tr[" + a + "]",
 						"class");
 
 				// compare the class name of current DE element is like 'thead'
@@ -591,7 +607,7 @@ public class YukataReantalTest {
 					continue;
 				} // if it is that continue with i++;
 
-				ele = findXpath((".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + a + "]/td[" + b + "]/div"));
+				ele = findXpath((".//*[@id='choose-date']/div/div/table/tbody/tr[" + a + "]/td[" + b + "]/div"));
 
 				attclass = ele.getAttribute("class");
 				if ("hour selected".equals(attclass)) {
@@ -606,33 +622,31 @@ public class YukataReantalTest {
 	}
 
 	// xpath cell with xpath 'tr[x]'
-	public int getPriceDate(String xpath_cell) throws InterruptedException {
-		String trclass = findXpath(xpath_cell).getAttribute("class");
-		if (!trclass.contains("even-early")) {
-			return 0;
-		}
-		xpath_cell = xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]/div/div/span[2]";
+public int getPriceDate(String xpath_cell) throws InterruptedException {
+		
+		xpath_cell = xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]";
 		String feecellclass = getAttributeElement(xpath_cell, "class");
-
+		
 		if ("discount".equals(feecellclass)) {
 
 			return -300;
 		} else {
-			if ("new even-early".equals(feecellclass)) {
+			if ("early".equals(feecellclass)) {
 
 				return 500;
 			}
 		}
-		return 0;
+		return 0;//normal
 
 	}
 
 	public Boolean checkTitleDateMessageTable() throws InterruptedException {
-		String title = findXpath(".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[1]").getText();
+		System.out.println("checking title message of date table .......");
+		String title = findXpath(".//*[@id='choose-shop-and-date']/article/div/div[8]/div[2]/span[1]").getText();
 		String get_title_var, date_var, time_first_date, time_last_date;
 		String hour_last_time, min_last_time;
 
-		date_var = getAttributeElement(".//*[@id='choose-date']/div[2]/div/table/tbody/tr["
+		date_var = getAttributeElement(".//*[@id='choose-date']/div/div/table/tbody/tr["
 				+ Integer.toString(indrFirstSelectedDate) + "]/td[" + Integer.toString(indcFirstSelectedDate) + "]/div",
 				"data-time_date");
 		date_var = convertDateDetailString(date_var);// convert
@@ -640,10 +654,10 @@ public class YukataReantalTest {
 		date_var = date_var.substring(5);// get 6-9
 		date_var = date_var.replace("-", "/");
 
-		time_first_date = getAttributeElement(".//*[@id='choose-date']/div[2]/div/table/tbody/tr["
+		time_first_date = getAttributeElement(".//*[@id='choose-date']/div/div/table/tbody/tr["
 				+ Integer.toString(indrFirstSelectedDate) + "]/td[" + Integer.toString(indcFirstSelectedDate) + "]/div",
 				"data-time_hour");
-		time_last_date = getAttributeElement(".//*[@id='choose-date']/div[2]/div/table/tbody/tr["
+		time_last_date = getAttributeElement(".//*[@id='choose-date']/div/div/table/tbody/tr["
 				+ Integer.toString(indrLastSeletedDate) + "]/td[" + Integer.toString(indcLastSeletedDate) + "]/div",
 				"data-time_hour");
 		// add 30s for last time get by date table
@@ -681,6 +695,7 @@ public class YukataReantalTest {
 			if (!checkMessageEarlyPriceDate(price_cell, text_price_message))
 				return false;
 			getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
+			System.out.println(getted_message);
 			if (getted_message.equals(text_message)) {
 				numEarlyDiscount += num_cell;
 				return true;
@@ -694,6 +709,7 @@ public class YukataReantalTest {
 				if (!checkMessageDiscountPriceDate(price_cell, text_price_message))
 					return false;
 				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します" + text_price_message;
+				System.out.println(getted_message);
 				if (getted_message.equals(text_message)) {
 					numEarlyDiscount += num_cell;
 					return true;
@@ -702,30 +718,33 @@ public class YukataReantalTest {
 
 			} else {
 				getted_message = hour_cell + " から" + Integer.toString(num_cell) + " 名様のお着付けを開始します";
+				System.out.println(getted_message);
 				if (getted_message.equals(text_message)) {
 					return true;
 
 				}
 			}
 		}
-		System.out.println(getted_message);
+
 		return false;
 	}
 
 	public Boolean getCheckMessageOneDateTable(String xpath_cell, String text_message, String text_price_message,
 			int num, int pr, int li_message) throws InterruptedException {
-		text_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[3]/ul/li" + "["
+		text_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[8]/div[2]/span[3]/ul/li" + "["
 				+ Integer.toString(li_message) + "]"))).getText();
 		pr = getPriceDate(xpath_cell);
 		earDiscountFee += pr * num;// get early or discount fee to check total
-									// price
+		
+		
 		if (pr != 0) {
-			text_price_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[3]/ul/li["
+			text_price_message = (findXpath((".//*[@id='choose-shop-and-date']/article/div/div[8]/div[2]/span[3]/ul/li["
 					+ Integer.toString(li_message) + "]/span"))).getText();
+
 		} else {
 			text_price_message = "";
 		}
-
+	
 		if (!checkOneMessageDateTable(xpath_cell, text_message, text_price_message, num, pr)) {
 			System.out.println("Message date " + li_message + " is wrong");
 			return false;
@@ -736,6 +755,7 @@ public class YukataReantalTest {
 	}
 
 	public Boolean checkMessageDateTable() throws InterruptedException {
+		System.out.println("checking message of date table.......");
 		int count_cell, num_cell, num_lost = 0, li_message = 1, pr = 0;
 		String xpath_cell, text_message = "", text_price_message = "";
 		count_cell = getSelectedCellDateTable();
@@ -743,9 +763,9 @@ public class YukataReantalTest {
 		// check title message date table first
 		if (!checkTitleDateMessageTable())
 			return false;
-
+		
 		if (count_cell == 1) {
-			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indrFirstSelectedDate)
+			xpath_cell = ".//*[@id='choose-date']/div/div/table/tbody/tr[" + Integer.toString(indrFirstSelectedDate)
 					+ "]";
 			if (!getCheckMessageOneDateTable(xpath_cell, text_message, text_price_message, numPerson, pr, li_message)) {
 				return false;
@@ -756,9 +776,11 @@ public class YukataReantalTest {
 
 		for (int i = indrFirstSelectedDate; i < indrLastSeletedDate; i++) {
 
-			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(i) + "]";
+			xpath_cell = ".//*[@id='choose-date']/div/div/table/tbody/tr[" + Integer.toString(i) + "]";
 			if (getAttributeElement(xpath_cell, "class").equals("thead")) {
 				continue;
+				
+				
 			}
 			if ("hour selected".equals(getAttributeElement(
 					xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]" + "/div", "class"))) {
@@ -777,7 +799,7 @@ public class YukataReantalTest {
 		}
 
 		num_lost = numPerson - num_lost;
-		xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indrLastSeletedDate) + "]";
+		xpath_cell = ".//*[@id='choose-date']/div/div/table/tbody/tr[" + Integer.toString(indrLastSeletedDate) + "]";
 		if (!getCheckMessageOneDateTable(xpath_cell, text_message, text_price_message, num_lost, pr, li_message)) {
 			System.out.println("Message date is wrong :" + text_message);
 			return false;
@@ -822,6 +844,7 @@ public class YukataReantalTest {
 		int sum_price = 0, sum_price_1_person = 0, price_after_tax, sum_price_after_tax;
 		String taxpr;
 		for (int i = 0; i < numPerson; i++) {
+		
 			// check total of 1 person
 			sum_price_1_person = Integer.parseInt(
 					driver.findElement(By.cssSelector("#plans_12_persons_" + Integer.toString(i) + " #option_cost"))
@@ -831,7 +854,7 @@ public class YukataReantalTest {
 			if (sum_price_1_person != Integer.parseInt(
 					driver.findElement(By.cssSelector("#plans_12_persons_" + Integer.toString(i) + " #person_amount"))
 							.getAttribute("data-value"))) {
-				System.out.println("Total price of person " + i + "is wrong");
+				System.out.println("Total price of person " + i + " is wrong"+sum_price_1_person);
 				return -1;
 			}
 
@@ -945,10 +968,10 @@ public class YukataReantalTest {
 				+ getAttributeElement(".//*[@id='select2-Book_birthday_month-container']", "title") + "/"
 				+ getAttributeElement(".//*[@id='select2-Book_birthday_day-container']", "title");
 		dateBooking = "2016/"
-				+ findXpath(".//*[@id='choose-shop-and-date']/article/div/div[6]/div[2]/span[1]").getText().trim();
+				+ findXpath(".//*[@id='choose-shop-and-date']/article/div/div[8]/div[2]/span[1]").getText().trim();
 		shopNameDetail = getSelectedShop();
 		if (earDiscountFee != 0) {
-			feeEarlyDiscountBooking = findXpath(".//*[@id='span_early_fee']/span").getText().trim() + "("
+			feeEarlyDiscountBooking = findXpath(".//*[@id='div_early_fee']/div/span").getText().trim() + "("
 					+ Integer.toString(numEarlyDiscount) + "名様分" + ")";
 
 		}
@@ -993,8 +1016,7 @@ public class YukataReantalTest {
 
 		numPerson_detail = findXpath(".//*[@id='booking_confirm']/div[1]/p[2]/span").getText().trim();
 		shopname_detail = findXpath(".//*[@id='booking_confirm']/div[1]/p[3]/span").getText().trim();
-		// because if date is not in early fee time , it is not show in booking
-		// or detail page
+		
 		if (earDiscountFee != 0) {
 			fee_detail = findXpath(".//*[@id='booking_confirm']/div[1]/p[4]/span").getText().trim();
 		}

@@ -77,41 +77,32 @@ public class BookingEventPlan {
 		// click event plan
 		clickButtonCss("[href='#travel-tab']");
 
-		
 		// clickButtonCss("[data-title='訪問着一覧']");
 		// Thread.sleep(4000);
 		// click event seijin
 		clickButtonCss("[data-title='訪問着一覧']");
 		Thread.sleep(4000);
-		chooseShopAndDress();
+
+		numPerson++;
+		// choose shop and dress
+		String nameShop;
+		nameShop = "kyoto";
+		// nameShop = "gionshio";
+		// nameShop = "osaka";
+		// nameShop = "tokyo";
+		chooseShopAndDress(nameShop, 2);// a is a first dress in list
+		Thread.sleep(2000);
+		
+		
+		
 		chooseRanDomDate();
 		checkProductPage();
 		Thread.sleep(1000);
 
-		// click to continue to choose dress
-		clickButtonCss(".continue-shopping");
-
-		// //// click event tab homogi
-		clickButtonCss("[data-title='振袖一覧']");
-		Thread.sleep(4000);
-		chooseShopAndDress();
-		checkProductPage();
-
-		// choose option
-		chooseOption();
-		// check option price
-		checkPriceOptionTable();
-
-		// check total price
-		checkTotalPriceBooking();
-
-		// check photo price
-		checkPricePhotoTable();
-
 		optionBookingList.add(Integer.toString(totalPrice));
-		int taxTotalPrice=(int)(Math.round((double)totalPrice * 1.08));
+		int taxTotalPrice = (int) (Math.round((double) totalPrice * 1.08));
 		optionBookingList.add(Integer.toString(taxTotalPrice));
-		
+
 		// input information of customer
 		inputCustomerInfomation();
 
@@ -129,18 +120,7 @@ public class BookingEventPlan {
 
 	}
 
-	public void chooseShopAndDress() throws InterruptedException {
-		numPerson++;
-		// choose shop and dress
-		String nameShop;
-		nameShop = "kyoto";
-		// nameShop = "gionshio";
-		// nameShop = "osaka";
-		// nameShop = "tokyo";
-		chooseShopAndDress(nameShop, 16);// a is a first dress in list
-		Thread.sleep(2000);
-
-	}
+	
 
 	public void checkProductPage() throws InterruptedException {
 
@@ -155,12 +135,18 @@ public class BookingEventPlan {
 
 		// //click next button
 		clickButtonCss(".btn");
-		Thread.sleep(3000);
+		Thread.sleep(5000);
+
+		// choose option
+		chooseOption();
+		// check option price
+		checkPriceOptionTable();
+
+		// check photo price
+		checkPricePhotoTable();
 
 		// check information in cart page
 		checkcartpage();
-		// check option price
-		checkPriceOptionTable();
 
 		// check total price
 		checkTotalPriceBooking();
@@ -205,7 +191,7 @@ public class BookingEventPlan {
 
 				}
 			}
-			
+
 		}
 		// get photo
 		int rowPhotoList = getRowTable(".wrap-option-list .group-opt");
@@ -289,14 +275,13 @@ public class BookingEventPlan {
 		getPhotoPrice += getPricePhoto("[data-id='58']") + getPricePhoto("[data-id='59']")
 				+ getPricePhoto("[data-id='60']") + getPricePhoto("[data-id='61']") + getPricePhoto("[data-id='62']")
 				+ getPricePhoto("[data-id='63']") + getPricePhoto("[data-id='64']") + getPricePhoto("[data-id='65']")
-				+ getPricePhoto("[data-id='66']") + getPricePhoto("[data-id='67']") + getPricePhoto("[data-id='68']")
-				+ getPricePhoto("[data-id='69']");
+				+ getPricePhoto("[data-id='68']") + getPricePhoto("[data-id='69']");
 
 		int sumphoto = Integer.parseInt(findCss("#book_option_cost").getAttribute("data-value"));
 		System.out.println("total price of photo " + getPhotoPrice);
 		Assert.assertEquals("Fail-check sum photo on cart page ", Boolean.TRUE, sumphoto == getPhotoPrice);
 		optionBookingList.add(Integer.toString(sumphoto));
-		
+
 	}
 
 	public int getPriceTableOption(String pricetext) throws InterruptedException {
@@ -334,20 +319,34 @@ public class BookingEventPlan {
 		return sum;
 	}
 
+	public int getRowTableDate(String s) throws InterruptedException {
+		List<WebElement> rows = driver.findElements(By.cssSelector(s));
+		int r = rows.size() - 1;// because it add a last row that is finished
+								// head tag
+		return r;
+	}
+
 	public void checkPriceOptionTable() throws InterruptedException {
 		int sum = 0;
-		sum += getPriceOptionOneTable("#product-" + iddress + " tbody td:nth-child(1) li:nth-child(", 2, 9)
-				+ getPriceOptionOneTable("#product-" + iddress + " tbody td:nth-child(3) li:nth-child(", 3, 5)
-				+ getPriceOptionOneTable("#product-" + iddress + " tbody td:nth-child(5) li:nth-child(", 3, 5)
+		int optionTable1 = getRowTableDate("#product-" + iddress + " tbody td:nth-child(1) li");
+		int optionTable2 = getRowTableDate("#product-" + iddress + " tbody td:nth-child(3) li");
+		int optionTable3 = getRowTableDate("#product-" + iddress + " tbody td:nth-child(5) li");
+		int optionTable4 = getRowTableDate("#product-" + iddress + " tbody td:nth-child(7) ul:nth-child(1) li");
+		int optionTable5 = getRowTableDate("#product-" + iddress + " tbody td:nth-child(7) ul:nth-child(2) li");
+
+		sum += getPriceOptionOneTable("#product-" + iddress + " tbody td:nth-child(1) li:nth-child(", 2, optionTable1)
+				+ getPriceOptionOneTable("#product-" + iddress + " tbody td:nth-child(3) li:nth-child(", 3,
+						optionTable2)
+				+ getPriceOptionOneTable("#product-" + iddress + " tbody td:nth-child(5) li:nth-child(", 3,
+						optionTable3)
 				+ getPriceOptionOneTable("#product-" + iddress + " tbody td:nth-child(7) ul:nth-child(1) li:nth-child(",
-						2, 3)
+						2, optionTable4)
 				+ getPriceOptionOneTable("#product-" + iddress + " tbody td:nth-child(7) ul:nth-child(2) li:nth-child(",
-						2, 10);
+						2, optionTable5);
 		String sumCartPage = findCss("#product-" + iddress + " #option_cost").getAttribute("data-value");
 		System.out.println("price option table of dress id=" + iddress + " is:" + sum);
 		Assert.assertEquals("Fail-check price option table od dress have id=" + iddress, Boolean.TRUE,
 				sum == Integer.parseInt(sumCartPage));
-		
 
 	}
 
@@ -359,19 +358,8 @@ public class BookingEventPlan {
 
 		// choose take photo for graduated dress kimono
 
-		clickButtonCss("[data-id='74'] label ");
+		clickButtonCss("[data-id='32'] label ");
 		Thread.sleep(2000);
-		clickButtonCss(".coming-of-age-day-calendar-content tr:nth-child(5) td:nth-child(4) div");
-		clickButtonCss(".btn.choose-day");
-		Thread.sleep(1000);
-
-		clickButtonCss("[data-id='76'] label ");
-		clickButtonCss("[data-id='77'] label ");
-		clickButtonCss("[data-id='78'] label ");
-		clickButtonCss("[data-id='79'] label ");
-		clickButtonCss("[data-id='80'] label ");
-		clickButtonCss("[data-id='81'] label ");
-		clickButtonCss("[data-id='82'] label ");
 
 		// choose photos
 		clickButtonCss("[id='book_options[59]SelectBoxItText']");
@@ -383,25 +371,10 @@ public class BookingEventPlan {
 		clickButtonCss("[id='book_options[61]SelectBoxItText']");
 		clickButtonCss("[id='book_options[61]SelectBoxItOptions'] li:nth-child(4)");
 
-		clickButtonCss("[id='book_options[62]SelectBoxItText']");
-		clickButtonCss("[id='book_options[62]SelectBoxItOptions'] li:nth-child(2)");
-
-		clickButtonCss("[id='book_options[63]SelectBoxItText']");
-		clickButtonCss("[id='book_options[63]SelectBoxItOptions'] li:nth-child(2)");
-
-		clickButtonCss("[id='book_options[64]SelectBoxItText']");
-		clickButtonCss("[id='book_options[64]SelectBoxItOptions'] li:nth-child(5)");
-
-		clickButtonCss("[id='book_options[65]SelectBoxItText']");
-		clickButtonCss("[id='book_options[65]SelectBoxItOptions'] li:nth-child(2)");
-
-		clickButtonCss("[id='book_options[67]SelectBoxItText']");
-		clickButtonCss("[id='book_options[67]SelectBoxItOptions'] li:nth-child(2)");
-
 	}
 
 	public void getInfoDressProductPage() throws InterruptedException {
-		int rows = getRowTable(".property li");
+		int rows = getRowTable(".property li") - 1;
 		for (int i = 1; i <= rows; i++) {
 			String s = findCss(".property li:nth-child(" + Integer.toString(i) + ")").getText().replace("\n", "");
 			informationDressProductList.add(s);
@@ -415,14 +388,17 @@ public class BookingEventPlan {
 		String getTitleMessage = findCss("#allocate-info-time").getText();
 		Assert.assertEquals("Fail-check title message date in cart page", Boolean.TRUE,
 				getTitleMessage.equals(titleMessageDateAllPage));
+		Thread.sleep(200);
 
 		// compare two list message date
 		List messageDateCartPage = new ArrayList();
 		int rowsMessage = getRowTable(".wrap-shop-date.clearfix li");
+		System.out.println(rowsMessage);
 		for (int i = 1; i <= rowsMessage; i++) {
 			messageDateCartPage.add(findCss(".wrap-shop-date.clearfix li:nth-child(" + Integer.toString(i) + ")")
 					.getText().trim().replace("\n", ""));
 		}
+
 		compareTwoList(messageDateProductpageList, messageDateCartPage);
 		Thread.sleep(2000);
 		// count id dress
@@ -437,7 +413,8 @@ public class BookingEventPlan {
 
 		// check shop name
 		String getshopname = findCss(".shop-name").getText().trim();
-		Assert.assertEquals("Fail-check shop name in cart page", Boolean.TRUE, getshopname.equals(shopname));
+		Assert.assertEquals("Fail-check shop name in cart page\n" + shopname + "\n" + getshopname, Boolean.TRUE,
+				getshopname.equals(shopname));
 
 		// check price of dress
 		checkPriceOfDress();
@@ -454,8 +431,9 @@ public class BookingEventPlan {
 					.replace("\n", "");
 			informationDressCartList.add(s);
 		}
-		System.out.println(informationDressCartList);
+
 		System.out.println(informationDressProductList);
+		System.out.println(informationDressCartList);
 
 		compareTwoList(informationDressProductList, informationDressCartList);
 
@@ -482,14 +460,15 @@ public class BookingEventPlan {
 	}
 
 	public void checkpricedress() throws InterruptedException {
-//		String getNomalPriceDress = findCss(".price-small").getText().replace("￥", "").replace(",", "")
-//				.replace("(税抜)", "").trim();
+		// String getNomalPriceDress =
+		// findCss(".price-small").getText().replace("￥", "").replace(",", "")
+		// .replace("(税抜)", "").trim();
 		String getDiscountPriceDress = findCss(".price-sale").getText().replace("￥", "").replace(",", "")
 				.replace("(税抜)", "").trim();
-//		System.out.println(getNomalPriceDress);
+		// System.out.println(getNomalPriceDress);
 		System.out.println(getDiscountPriceDress);
-//		Assert.assertEquals("Fail-check nomal price dress ", Boolean.TRUE,
-//				getNomalPriceDress.equals(Integer.toString(normalpricedress)));
+		// Assert.assertEquals("Fail-check nomal price dress ", Boolean.TRUE,
+		// getNomalPriceDress.equals(Integer.toString(normalpricedress)));
 		Assert.assertEquals("Fail-check sale price dress ", Boolean.TRUE,
 				getDiscountPriceDress.equals(Integer.toString(salepricedress)));
 
@@ -500,7 +479,7 @@ public class BookingEventPlan {
 		// choose shop
 		Select chooseshop = new Select(driver.findElement(By.cssSelector("[id=shop_id]")));
 		if ("kyoto".equals(nameOfShop)) {
-			shopname = "京都駅前店";
+			shopname = "フォーマル 京都タワー店";
 			chooseshop.selectByIndex(1);
 		} else if ("gionshio".equals(nameOfShop)) {
 			shopname = "祇園四条店";
@@ -513,7 +492,7 @@ public class BookingEventPlan {
 			chooseshop.selectByIndex(4);
 		}
 		// click search
-		Thread.sleep(5000);
+		Thread.sleep(7000);
 		// click dress
 		int row = getRowTable(".list.dp-flex li");
 		chooseDress(row, indexdress);
@@ -531,15 +510,15 @@ public class BookingEventPlan {
 		optionBookingList.add(dressName);
 
 		// get price dress
-		normalpricedress = Integer.parseInt(findCss(" li:nth-child(" + indexdress + ") .price a").getText()
-				.replace(",", "").replace("円", ""));
+		normalpricedress = Integer.parseInt(
+				findCss(" li:nth-child(" + indexdress + ") .price a").getText().replace(",", "").replace("円", ""));
 		String saleprice = findCss(" li:nth-child(" + indexdress + ") .price a").getText().replace("\n", "")
 				.replace(",", "").replace("円", "");
 		optionBookingList.add(saleprice);
 		salepricedress = Integer.parseInt(saleprice);
 
 		totalPrice += salepricedress;
-		clickButtonCss("li:nth-child(" + Integer.toString(indexdress) + ") img");
+		clickButtonCss(".list.dp-flex li:nth-child(" + Integer.toString(indexdress) + ") img");
 
 	}
 
@@ -670,7 +649,7 @@ public class BookingEventPlan {
 					// nothing
 				} else {
 					if (alreadyClick == 20) {
-						scrollAndClickXpath(xpathDateElement, 0);
+						scrollAndClickXpath(xpathDateElement, 500);
 					}
 					if (assertDate())
 						continue;
@@ -695,18 +674,15 @@ public class BookingEventPlan {
 	public void chooseRanDomDate() throws InterruptedException {
 
 		int dem = 0;
-		while (dem <= 16) {
+		while (dem <= 2) {
 			dem++;
 			clickButtonXpath(".//*[@id='page-next']");
 			Thread.sleep(3000);
 		}
-		// while (!chooseRanDomDateOneTable()) {
-		// clickButtonXpath(".//*[@id='page-next']");
-		// Thread.sleep(3000);
-		// }
-		clickButtonXpath(".//*[@id='choose-date']/div[2]/div/table/tbody/tr[1]/td[7]/div");
-		indcFirstSelectedDate = 7;
-		indrFirstSelectedDate = 1;
+		while (!chooseRanDomDateOneTable()) {
+			clickButtonXpath(".//*[@id='page-next']");
+			Thread.sleep(3000);
+		}
 
 	}
 
@@ -812,21 +788,19 @@ public class BookingEventPlan {
 
 	// xpath cell with xpath 'tr[x]'
 	public int getPriceDate(String xpath_cell) throws InterruptedException {
-		String trclass = findXpath(xpath_cell).getAttribute("class");
-		if (!trclass.contains("even-early")) {
-			return 0;
-		}
-		xpath_cell = xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]/div/div/span[2]";
-		String pricecell = findXpath(xpath_cell).getText();
+		xpath_cell = xpath_cell + "/td[" + Integer.toString(indcFirstSelectedDate) + "]";
+		String feecellclass = getAttributeElement(xpath_cell, "class");
 
-		if ("-300円".equals(pricecell)) {
+		if ("discount".equals(feecellclass)) {
+
 			return -300;
 		} else {
-			if ("+500円".equals(pricecell)) {
+			if ("early".equals(feecellclass)) {
+
 				return 500;
 			}
 		}
-		return 0;
+		return 0;// normal
 
 	}
 
@@ -847,7 +821,8 @@ public class BookingEventPlan {
 
 		// check
 		System.out.println("Title message:" + getTiltleMessage);
-		Assert.assertEquals("Fail:check title message date\n"+getTiltleMessage+"\n"+titleMessage, Boolean.TRUE, getTiltleMessage.equals(titleMessage));
+		Assert.assertEquals("Fail:check title message date\n" + getTiltleMessage + "\n" + titleMessage, Boolean.TRUE,
+				getTiltleMessage.equals(titleMessage));
 		titleMessageDateAllPage = titleMessage;
 
 	}
@@ -959,7 +934,7 @@ public class BookingEventPlan {
 		if (count_cell == 2) {
 			xpath_cell = ".//*[@id='choose-date']/div[2]/div/table/tbody/tr[" + Integer.toString(indrFirstSelectedDate)
 					+ "]";
-			System.out.println("cuoi" + earlyDiscountFee);
+
 			getCheckOneMessageDateTable(xpath_cell, text_message, text_price_message, numPerson, pr, li_message);
 
 		} else {
@@ -1061,6 +1036,7 @@ public class BookingEventPlan {
 
 		// add with photo price
 		totalPrice += Integer.parseInt(findCss("#book_option_cost").getAttribute("data-value"));
+
 		// add early fee or discount fee
 		totalPrice += earlyDiscountFee;
 
