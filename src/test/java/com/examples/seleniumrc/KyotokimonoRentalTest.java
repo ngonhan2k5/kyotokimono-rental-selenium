@@ -259,6 +259,7 @@ public class KyotokimonoRentalTest {
 		String result = e.getAttribute(attb);
 		return result;
 	}
+	// Duc test
 
 	// click date in present table
 	public Boolean chooseRanDomDateOneTable() throws InterruptedException {
